@@ -1,0 +1,13 @@
+{
+  "name": "google-container-slack",
+  "version": "0.0.1",
+  "description": "Slack integration for Google Cloud Build, using Google Cloud Functions",
+  "main": "index.js",
+  "dependencies": {
+    "@slack/web-api": "5.9.0",
+    "cloud-functions-runtime-config": "0.4.0",
+    "humanize-duration": "3.10.0",
+    "@octokit/rest": "17.9.2",
+    "@google-cloud/logging": "^7.3.0"
+  }
+}
