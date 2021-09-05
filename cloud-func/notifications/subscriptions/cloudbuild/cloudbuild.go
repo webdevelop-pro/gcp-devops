@@ -64,8 +64,8 @@ type EventRecord struct {
 	} `json:"substitutions"`
 }
 
-// BuildNotification consumes a Pub/Sub message.
-func BuildNotification(ctx context.Context, m subscriptions.PubSubMessage) error {
+// Subscribe consumes a Pub/Sub message.
+func Subscribe(ctx context.Context, m subscriptions.PubSubMessage) error {
 	var conf Config
 	log := logger.GetDefaultLogger(nil)
 
