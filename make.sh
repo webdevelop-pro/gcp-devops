@@ -208,14 +208,14 @@ cat > /tmp/cloudbuild.env << EOF
 SLACK_TOKEN: ${env_slack_bot_token}
 GIT_REPO_OWNER: ${env_github_repo_owner}
 GITHUB_ACCESS_TOKEN: ${env_github_access_token}
-CHANNELS: "${env_build_notifications}"
+CHANNELS: '${env_build_notifications}'
 EOF
 
     gcloud --project ${env_project_id} functions deploy build-notifications \
      --runtime go116 \
      --trigger-topic cloud-builds \
      --allow-unauthenticated \
-     --entry-point=webdevelop-pro/gcp-devops/cloud-func/notifications/subscriptions/cloudbuild/Subscribe \
+     --entry-point=CloudBuildSubscribe \
      --source=${BASE_PATH}/cloud-func/notifications \
      --env-vars-file=/tmp/cloudbuild.env
 }
