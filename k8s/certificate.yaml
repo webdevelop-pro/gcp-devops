@@ -1,0 +1,28 @@
+{%- set service_name = os.filename.split('.')[0] %}
+
+{%- if not service_name in env.apps %}
+  {{ 0/0 }} # Please add this deployment to apps list
+{%- endif %}
+
+{%- if 'ingress' in env.apps[service_name] %}
+
+{%- set ingress = env.apps[service_name].ingress %}
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: "{{ service_name }}-certs"
+  namespace: "{{ env.k8s.apps.namespace }}"
+spec:
+  secretName: "{{ service_name }}-certs"
+  issuerRef:
+    name: letsencrypt-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  {%- for domain, _ in ingress.routes.items() %}
+      - "{{ domain }}"
+  {%- endfor %}
+
+
+{%- endif %}

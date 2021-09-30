@@ -1,0 +1,7 @@
+{% set service_name = os.filename.split('.')[0] %}
+
+{% set _d = settings.update(env.apps.get(service_name, {})) %}
+
+{% set _d = env.apps.update({service_name: settings}) %}
+
+{'env': {{ env }} }

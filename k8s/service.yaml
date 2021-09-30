@@ -1,0 +1,42 @@
+{% set service_name = os.filename.split('.')[0] %}
+
+{% if not service_name in env.apps %}
+  {{ 0/0 }} # Please add this deployment to apps list
+{% endif %}
+
+{%- set app = env.apps[service_name] %}
+
+{% if app.get('deploy', false) %}
+
+{%- if 'ports' in app %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ service_name }}-service"
+  namespace: "{{ env.k8s.apps.namespace }}"
+  labels:
+    app: "{{ service_name }}"
+spec:
+  ports:
+  {%- for name, port in app.get('ports', {}).items() %}
+    - port: {{ port }}
+      targetPort: {{ port }}
+      name: "{{ name }}"
+  {%- endfor %}
+
+  {%- if app.get('docs', false) %}
+    - port: 8086
+      targetPort: 8086
+      name: doc
+    - port: 8087
+      targetPort: 8087
+      name: redoc
+  {%- endif %}
+
+  type: ClusterIP
+  selector:
+    app: "{{ service_name }}"
+{%- endif %}
+
+{% endif %}

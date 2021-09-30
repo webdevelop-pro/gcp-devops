@@ -1,0 +1,18 @@
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-issuer
+spec:
+  acme:
+    server: "{{ env.project.acme.server }}"
+    email: "{{ env.project.acme.email }}"
+    privateKeySecretRef:
+      name: letsencrypt-issuer
+    solvers:
+    - dns01:
+        clouddns:
+          project: "{{ env.project.id }}"
+          serviceAccountSecretRef:
+            name: cloud-dns-key
+            key: key.json
