@@ -56,8 +56,9 @@ function delete_certificate()
 function create_domains_list()
 {
   DOMAINS=""
-  for FILE_NAME in $(ls -1 ${BASE_PATH}/../backend-buckets)
+  for FILE_NAME in $(find ${BASE_PATH}/../buckets -maxdepth 1 -type f)
   do
+    FILE_NAME=$(basename ${FILE_NAME})
     SERVICE_NAME="${FILE_NAME%.*}"
 
     if [[ $ENV_NAME == "master" ]]
