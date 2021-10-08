@@ -20,10 +20,3 @@ function create_dns_record()
       --zone ${DNS_ZONE_NAME}
   fi
 }
-
-function main()
-{
-    create_dns_record
-}
-
-main

@@ -24,10 +24,3 @@ defaultUrlRedirect:
    --target-http-proxy=${HTTP_LB_NAME} \
    --ports=80
 }
-
-function main()
-{
-    create_https_lb
-}
-
-main

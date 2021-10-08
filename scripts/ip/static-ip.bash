@@ -7,10 +7,3 @@ function create_static_ip()
       --ip-version=IPV4 \
       --global
 }
-
-function main()
-{
-    create_static_ip
-}
-
-main

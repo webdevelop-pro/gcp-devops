@@ -23,10 +23,3 @@ function create_https_lb()
       --target-https-proxy=${PROXY_NAME} \
       --ports=443
 }
-
-function main()
-{
-    create_https_lb
-}
-
-main
