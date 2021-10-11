@@ -9,9 +9,10 @@ function create_dns_record()
 
   if [[ ${_CURRENT_DOMAIN} == "" ]]
   then
-    gcloud dns record-sets transaction add ${_IP}
+    gcloud dns record-sets transaction add ${_IP} \
       --name=${_DOMAIN_RECORD} \
       --type=A \
+      --ttl 300 \
       --zone=${DNS_ZONE_NAME}
   else
     gcloud dns record-sets update ${_DOMAIN_RECORD} \
