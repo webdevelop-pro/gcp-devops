@@ -9,11 +9,18 @@ function create_dns_record()
 
   if [[ ${_CURRENT_DOMAIN} == "" ]]
   then
+    rm /tmp/transaction.yaml
+
+    gcloud dns record-sets transaction start --zone=${DNS_ZONE_NAME} --transaction-file=/tmp/transaction.yaml
+
     gcloud dns record-sets transaction add ${_IP} \
       --name=${_DOMAIN_RECORD} \
       --type=A \
       --ttl 300 \
-      --zone=${DNS_ZONE_NAME}
+      --zone=${DNS_ZONE_NAME} \
+      --transaction-file=/tmp/transaction.yaml
+
+    gcloud dns record-sets transaction execute --zone=${DNS_ZONE_NAME} --transaction-file=/tmp/transaction.yaml
   else
     gcloud dns record-sets update ${_DOMAIN_RECORD} \
       --rrdatas ${_IP} \

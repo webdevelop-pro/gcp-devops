@@ -10,6 +10,8 @@ function create_backend_bucket_lb() {
 
   gsutil mb -p ${PROJECT_ID} -l ${BUCKETS_LOCATION} -c standard -b on gs://${BUCKET_NAME}
 
+  gsutil iam ch allUsers:objectViewer gs://${BUCKET_NAME}
+
   gcloud compute backend-buckets create ${BACKEND_BUCKET_NAME} \
       --gcs-bucket-name=${BUCKET_NAME} \
       --enable-cdn
