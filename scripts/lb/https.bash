@@ -3,7 +3,7 @@
 function create_https_lb()
 {
   export DEFAULT_BACKEND_BUCKET_NAME="${PROJECT_NAME}-default-backend"
-  export DEFAULT_BUCKET_NAME=${PROJECT_NAME}-default
+  export DEFAULT_BUCKET_NAME=${PROJECT_NAME}-${ENV_NAME}-default
 
   gsutil mb -p ${PROJECT_ID} -c standard -b on gs://${DEFAULT_BUCKET_NAME}
 
