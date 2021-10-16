@@ -106,12 +106,20 @@ spec:
 
         {%- if app.get('docs', false) %}
         - name: {{ service_name }}-doc
+          {%- if app.get('image', '') != '' %}
+          image: "{{ app.image }}"
+          {%- else %}
           image: "{{ env.project.registry }}/{{ env.project.id }}/{{ service_name }}:latest-{{ env.name }}"
+          {%- endif %}
           ports:
           - containerPort: 8086
           command: ["/go/bin/swagger", "serve", "--port=8086", "--flavor=swagger", "--no-open", "swagger.yaml"]
         - name: {{ service_name }}-redoc
+          {%- if app.get('image', '') != '' %}
+          image: "{{ app.image }}"
+          {%- else %}
           image: "{{ env.project.registry }}/{{ env.project.id }}/{{ service_name }}:latest-{{ env.name }}"
+          {%- endif %}
           ports:
           - containerPort: 8087
           command: ["/go/bin/swagger", "serve", "--port=8087", "--flavor=redoc", "--no-open", "swagger.yaml"]
