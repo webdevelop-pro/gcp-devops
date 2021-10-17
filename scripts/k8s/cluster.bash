@@ -18,8 +18,10 @@ function create_k8s_cluster()
         --enable-autorepair
 }
 
-function create_k8s_service_accounts()
+function setup_cloudbuild()
 {
+    gcloud services enable --project ${env_project_id} cloudbuild.googleapis.com
+
     gcloud iam service-accounts --project ${env_project_id} create kuberengine --display-name "CI/CD deployment"
 
     gcloud projects add-iam-policy-binding ${env_project_id} \
