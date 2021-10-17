@@ -27,13 +27,6 @@ function create_tmp_certificate()
   gcloud compute target-https-proxies update ${PROXY_NAME} \
     --project ${env_project_id} \
     --ssl-certificates="${CERTIFICATE_NAME}-tmp,${CERTIFICATE_NAME}"
-
-  STATUS="PROVISIONING"
-  while [[ ${STATUS} != "ACTIVE" ]]; do
-    STATUS=$(gcloud compute ssl-certificates describe ${CERTIFICATE_NAME}-tmp --project ${env_project_id} --format json | jq '.managed.status')
-    echo "Craete certificate ${CERTIFICATE_NAME}-tmp, status - ${STATUS}"
-    sleep 10s
-  done
 }
 
 function delete_tmp_certificate()
@@ -73,7 +66,7 @@ function create_domains_list()
   done
 }
 
-function update_certificate()
+function create_certificate()
 {
   create_domains_list
 
@@ -87,16 +80,4 @@ function update_certificate()
   create_gcp_certificate ${DOMAINS}
 
   delete_tmp_certificate
-}
-
-function create_certificate()
-{
-  create_domains_list
-
-  echo "Start create certificates for:"
-  echo "${DOMAINS}"
-
-  delete_certificate
-
-  create_gcp_certificate ${DOMAINS}
 }
