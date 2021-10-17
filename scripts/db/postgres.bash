@@ -2,8 +2,9 @@
 
 function create_database()
 {
-  DATABASE_NAME=$1
-  DATABASE_INSTANCE_NAME=$(printenv env_db_databases_${DATABASE_NAME}_instance)
+  DATABASE=$1
+  DATABASE_NAME=$(printenv env_db_databases_${DATABASE}_name)
+  DATABASE_INSTANCE_NAME=$(printenv env_db_databases_${DATABASE}_instance)
   DATABASE_VERSION=$(printenv env_db_instances_${DATABASE_INSTANCE_NAME}_version)
   DATABASE_CPU=1
   DATABASE_MEM="3840MiB"
