@@ -60,7 +60,7 @@ function setup_cloudsql_proxy()
         --iam-account sqlproxy@${env_project_id}.iam.gserviceaccount.com
 
     kubectl -n ${env_k8s_apps_namespace} create secret generic cloudsql-instance-credentials \
-        --from-file=credentials.json=/tmp/sqlproxy-key.json
+        --from-file=service_account.json=/tmp/sqlproxy-key.json
 }
 
 function deploy_k8s_ingress_nginx()
