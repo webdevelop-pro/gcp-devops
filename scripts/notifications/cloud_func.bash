@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+BASE_PATH=$(dirname "$0")
 function craete_cloudbuild_notification()
 {
 
