@@ -16,13 +16,7 @@ RENDERED_TEMPLATES_DIR="rendered_templates"
 RENDERED_APPS_DIR="${RENDERED_TEMPLATES_DIR}/apps"
 RENDERED_GLOBAL_DIR="${RENDERED_TEMPLATES_DIR}/global"
 
-ENV_CONFIG=$2
-GLOBAL_CONFIGS=$(dirname "$2")/../global
-
-if [ ! -f "$2" ]; then
-    echo "Config not found!"
-    exit 1
-fi
+GLOBAL_CONFIGS=${BASE_PATH}/../configs/global
 
 function render_template()
 {
@@ -225,10 +219,6 @@ EOF
      --source=${BASE_PATH}/cloud-func/notifications \
      --env-vars-file=/tmp/cloudbuild.env
 }
-
-j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -o ${DEPLOY_CONFIG} ${ENV_CONFIG} ${ENV_CONFIG}
-
-eval $(parse_yaml ${DEPLOY_CONFIG})
 
 gcloud container --project ${env_project_id} clusters get-credentials ${env_k8s_cluster_name} --region ${env_k8s_nodes_region}
 
