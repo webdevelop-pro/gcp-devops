@@ -1,4 +1,4 @@
-module github.com/webdevelop/gcp-devops/cloud-func/notifications/subscriptions/cloudbuild
+module github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/subscriptions/cloudbuild
 
 go 1.15
 
