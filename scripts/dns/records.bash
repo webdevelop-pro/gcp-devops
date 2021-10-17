@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
 DNS_ZONE_NAME=$(echo "${env_project_domain}" | tr -d '.-_')
-STATIC_IP_NAME="public-frontend-ip"
 
 function create_dns_record()
 {
   _DOMAIN_RECORD=$1
+  _IP=$2
 
   _CURRENT_DOMAIN=$(gcloud dns record-sets list --project ${env_project_id} --zone ${DNS_ZONE_NAME} --format json | jq ".[] | select(.name==\"${_DOMAIN_RECORD}.\")")
-  _IP=$(gcloud compute addresses describe --global --project ${env_project_id} --format json ${STATIC_IP_NAME} | jq '.address' | tr -d '"')
 
   if [[ ${_CURRENT_DOMAIN} == "" ]]
   then
