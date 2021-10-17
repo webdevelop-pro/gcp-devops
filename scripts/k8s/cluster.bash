@@ -18,6 +18,13 @@ function create_k8s_cluster()
         --enable-autorepair
 }
 
+function create_namespaces()
+{
+    gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
+
+    kubectl create ns ${env_k8s_apps_namespace}
+}
+
 function setup_cloudbuild()
 {
     gcloud services enable --project ${env_project_id} cloudbuild.googleapis.com
@@ -35,6 +42,25 @@ function setup_cloudbuild()
     gcloud projects add-iam-policy-binding ${env_project_id} \
         --member serviceAccount:kuberengine@${env_project_id}.iam.gserviceaccount.com \
         --role roles/storage.admin
+}
+
+function setup_cloudsql_proxy()
+{
+    gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
+
+    gcloud iam service-accounts create sqlproxy \
+        --project ${env_project_id} \
+        --display-name "SQL proxy"
+
+    gcloud projects add-iam-policy-binding ${env_project_id} \
+        --member serviceAccount:sqlproxy@${env_project_id}.iam.gserviceaccount.com \
+        --role roles/cloudsql.client
+
+    gcloud iam service-accounts keys create /tmp/sqlproxy-key.json \
+        --iam-account sqlproxy@${env_project_id}.iam.gserviceaccount.com
+
+    kubectl -n ${env_k8s_apps_namespace} create secret generic cloudsql-instance-credentials \
+        --from-file=credentials.json=/tmp/sqlproxy-key.json
 }
 
 function deploy_k8s_ingress_nginx()
