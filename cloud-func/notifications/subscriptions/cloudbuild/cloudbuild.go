@@ -9,9 +9,9 @@ import (
 	"time"
   "strings"
 
+	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/git"
+	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/senders"
 	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/subscriptions"
-	"github.com/webdevelop-pro/gcp-devops/go-common/git"
-	"github.com/webdevelop-pro/gcp-devops/go-common/senders"
 	"github.com/webdevelop-pro/go-common/logger"
 
 	"github.com/kelseyhightower/envconfig"

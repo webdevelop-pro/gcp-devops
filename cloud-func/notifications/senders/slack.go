@@ -2,7 +2,7 @@ package senders
 
 import (
 	"github.com/slack-go/slack"
-	"github.com/webdevelop-pro/gcp-devops/go-common/git"
+	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/git"
 )
 
 type SlackSender struct {
