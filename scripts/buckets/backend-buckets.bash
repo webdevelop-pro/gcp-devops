@@ -3,10 +3,11 @@
 function create_backend_bucket_lb() {
   SERVICE_NAME=$1
   DOMAIN_RECORD=$2
+  PATH_NAME_PREFIX=$3
   BACKEND_BUCKET_NAME="${SERVICE_NAME}-${ENV_NAME}-backend-bucket"
 
   BUCKET_NAME="${PROJECT_NAME}-${ENV_NAME}-${SERVICE_NAME}"
-  PATH_MATCHER_NAME="${ENV_NAME}-${SERVICE_NAME}-matcher"
+  PATH_MATCHER_NAME="${PATH_NAME_PREFIX}${ENV_NAME}-${SERVICE_NAME}-matcher"
 
   gsutil mb -p ${PROJECT_ID} -l ${BUCKETS_LOCATION} -c standard -b on gs://${BUCKET_NAME}
 
