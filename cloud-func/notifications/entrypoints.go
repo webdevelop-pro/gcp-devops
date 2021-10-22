@@ -3,11 +3,10 @@ package notifications
 import (
 	"context"
 
-	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/subscriptions"
-	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/subscriptions/cloudbuild"
+	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/cloudbuild"
 )
 
 // Subscribe consumes a Pub/Sub message.
-func CloudBuildSubscribe(ctx context.Context, m subscriptions.PubSubMessage) error {
+func CloudBuildSubscribe(ctx context.Context, m cloudbuild.PubSubMessage) error {
 	return cloudbuild.Subscribe(ctx, m)
 }
