@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/git"
+	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/messages"
 	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/senders"
 	"github.com/webdevelop-pro/go-common/logger"
 
@@ -30,12 +31,6 @@ type ChannelsMap map[string][]Channel
 type Channel struct {
 	Type ChannelType `json:"type"`
 	To   string      `json:"to"`
-}
-
-// PubSubMessage is the payload of a Pub/Sub event. Please refer to the docs for
-// additional information regarding Pub/Sub events.
-type PubSubMessage struct {
-	Data []byte `json:"data"`
 }
 
 func (channels *ChannelsMap) Decode(value string) error {
@@ -71,7 +66,7 @@ type EventRecord struct {
 }
 
 // Subscribe consumes a Pub/Sub message.
-func Subscribe(ctx context.Context, m PubSubMessage) error {
+func Subscribe(ctx context.Context, m messages.PubSubMessage) error {
 	var conf Config
 	log := logger.GetDefaultLogger(nil)
 
@@ -101,7 +96,7 @@ func NewWorker(conf Config) Worker {
 	}
 }
 
-func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
+func (w Worker) ProcessEvent(ctx context.Context, m messages.PubSubMessage) error {
 	var event EventRecord
 	json.Unmarshal(m.Data, &event)
 
