@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 	"time"
+  "strings"
 
 	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/subscriptions"
 	"github.com/webdevelop-pro/gcp-devops/go-common/git"
@@ -131,24 +132,27 @@ func (w Worker) ProcessEvent(ctx context.Context, m subscriptions.PubSubMessage)
 }
 
 func (w Worker) sendNotification(event EventRecord, channel Channel) error {
-	message, err := w.createMessage(event)
-	if err != nil {
-		return fmt.Errorf("failed create notification message: %w", err)
-	}
+  // Do not show notifications for side branches, like feat/, fix/, doc/ and so on
+  if strings.Contains(event.Substitutions.BranchName, "/") == false { 
+    message, err := w.createMessage(event)
+    if err != nil {
+      return fmt.Errorf("failed create notification message: %w", err)
+    }
 
-	routes := map[ChannelType]senders.Send{
-		Matrix: senders.SendToMatrix,
-		Slack:  senders.SlackSender{Token: w.SlackToken}.SendToSlack,
-	}
+    routes := map[ChannelType]senders.Send{
+      Matrix: senders.SendToMatrix,
+      Slack:  senders.SlackSender{Token: w.SlackToken}.SendToSlack,
+    }
 
-	err = routes[channel.Type](
-		message,
-		channel.To,
-		senders.MessageStatus(event.Status),
-	)
-	if err != nil {
-		return fmt.Errorf("failed send notification: %w", err)
-	}
+    err = routes[channel.Type](
+      message,
+      channel.To,
+      senders.MessageStatus(event.Status),
+    )
+    if err != nil {
+      return fmt.Errorf("failed send notification: %w", err)
+    }
+  }
 
 	return nil
 }
