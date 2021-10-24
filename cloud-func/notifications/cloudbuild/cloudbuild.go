@@ -6,12 +6,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"strings"
 	"time"
-  "strings"
 
-	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/subscriptions"
-	"github.com/webdevelop-pro/gcp-devops/go-common/git"
-	"github.com/webdevelop-pro/gcp-devops/go-common/senders"
+	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/git"
+	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/messages"
+	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/senders"
 	"github.com/webdevelop-pro/go-common/logger"
 
 	"github.com/kelseyhightower/envconfig"
@@ -65,8 +65,8 @@ type EventRecord struct {
 	} `json:"substitutions"`
 }
 
-// BuildNotification consumes a Pub/Sub message.
-func BuildNotification(ctx context.Context, m subscriptions.PubSubMessage) error {
+// Subscribe consumes a Pub/Sub message.
+func Subscribe(ctx context.Context, m messages.PubSubMessage) error {
 	var conf Config
 	log := logger.GetDefaultLogger(nil)
 
@@ -96,7 +96,7 @@ func NewWorker(conf Config) Worker {
 	}
 }
 
-func (w Worker) ProcessEvent(ctx context.Context, m subscriptions.PubSubMessage) error {
+func (w Worker) ProcessEvent(ctx context.Context, m messages.PubSubMessage) error {
 	var event EventRecord
 	json.Unmarshal(m.Data, &event)
 
@@ -132,27 +132,27 @@ func (w Worker) ProcessEvent(ctx context.Context, m subscriptions.PubSubMessage)
 }
 
 func (w Worker) sendNotification(event EventRecord, channel Channel) error {
-  // Do not show notifications for side branches, like feat/, fix/, doc/ and so on
-  if strings.Contains(event.Substitutions.BranchName, "/") == false { 
-    message, err := w.createMessage(event)
-    if err != nil {
-      return fmt.Errorf("failed create notification message: %w", err)
-    }
+	// Do not show notifications for side branches, like feat/, fix/, doc/ and so on
+	if strings.Contains(event.Substitutions.BranchName, "/") == false {
+		message, err := w.createMessage(event)
+		if err != nil {
+			return fmt.Errorf("failed create notification message: %w", err)
+		}
 
-    routes := map[ChannelType]senders.Send{
-      Matrix: senders.SendToMatrix,
-      Slack:  senders.SlackSender{Token: w.SlackToken}.SendToSlack,
-    }
+		routes := map[ChannelType]senders.Send{
+			Matrix: senders.SendToMatrix,
+			Slack:  senders.SlackSender{Token: w.SlackToken}.SendToSlack,
+		}
 
-    err = routes[channel.Type](
-      message,
-      channel.To,
-      senders.MessageStatus(event.Status),
-    )
-    if err != nil {
-      return fmt.Errorf("failed send notification: %w", err)
-    }
-  }
+		err = routes[channel.Type](
+			message,
+			channel.To,
+			senders.MessageStatus(event.Status),
+		)
+		if err != nil {
+			return fmt.Errorf("failed send notification: %w", err)
+		}
+	}
 
 	return nil
 }
@@ -165,10 +165,10 @@ func (w Worker) createMessage(event EventRecord) (string, error) {
 		return "", err
 	}
 
-	msgTemplate := "Build <{{ .Event.LogURL }}|{{ .Event.Status }}>," +
-		"Commit: <{{ .Commit.URL }}|{{ .Event.Substitutions.RepoName }}/{{ .Event.Substitutions.BranchName }} - {{ .Event.Substitutions.ShortSha }}>" +
+	msgTemplate := "Build <{{ .Event.LogURL }}|{{ .Event.Status }}>, " +
+		"Commit: <{{ .Commit.URL }}|{{ .Event.Substitutions.ShortSha }}>" +
 		"\n" +
-		"Author: <https://github.com/{{ .Commit.AuthorLogin }}|{{ .Commit.AuthorName }}>, Branch: <https://github.com/{{ .Event.Substitutions.RepoName }}/tree/{{ .Event.Substitutions.BranchName }}>" +
+		"Author: <https://github.com/{{ .Commit.AuthorLogin }}|{{ .Commit.AuthorName }}>, Branch: <https://github.com/{{ .Event.Substitutions.RepoName }}/tree/{{ .Event.Substitutions.BranchName }}|{{ .Event.Substitutions.BranchName }}>" +
 		"\n" +
 		"{{ .Commit.Message }}" +
 		"\nDuration: {{ .Duration }}"
