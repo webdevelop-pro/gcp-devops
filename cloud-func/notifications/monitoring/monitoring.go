@@ -1,4 +1,4 @@
-package cloudbuild
+package monitoring
 
 import (
 	"context"
