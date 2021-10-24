@@ -1,6 +1,8 @@
 package senders
 
-type Send func(msg, dst string, status MessageStatus) error
+import "encoding/json"
+
+type Send func(msg, attachment, dst string, status MessageStatus) error
 
 type MessageStatus string
 
@@ -16,4 +18,28 @@ var StatusColor = map[MessageStatus]string{
 	Failure:       "#EA4335", // red
 	Timeout:       "#FBBC05", // yellow
 	InternalError: "#EA4335", // red
+}
+
+type ChannelType string
+
+const (
+	Slack  ChannelType = "slack"
+	Matrix ChannelType = "matrix"
+)
+
+type Channel struct {
+	Type ChannelType `json:"type"`
+	To   string      `json:"to"`
+}
+
+type ChannelsMap map[string][]Channel
+
+type ChannelsArray []Channel
+
+func (channels *ChannelsMap) Decode(value string) error {
+	return json.Unmarshal([]byte(value), channels)
+}
+
+func (channels *ChannelsArray) Decode(value string) error {
+	return json.Unmarshal([]byte(value), channels)
 }

@@ -11,3 +11,8 @@ import (
 func CloudBuildSubscribe(ctx context.Context, m messages.PubSubMessage) error {
 	return cloudbuild.Subscribe(ctx, m)
 }
+
+// CloudBuildSubscribe consumes a Pub/Sub monitoring messages.
+func MonitoringSubscribe(ctx context.Context, m messages.PubSubMessage) error {
+	return cloudbuild.Subscribe(ctx, m)
+}

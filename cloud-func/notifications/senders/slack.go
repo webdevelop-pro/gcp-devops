@@ -2,18 +2,23 @@ package senders
 
 import (
 	"github.com/slack-go/slack"
-	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/git"
 )
 
 type SlackSender struct {
-	Token     string `required:"true" split_words:"true"`
-	GitClient git.Client
+	Token string `required:"true" split_words:"true"`
 }
 
-func (sl SlackSender) SendToSlack(message, channel string, status MessageStatus) error {
+func (sl SlackSender) SendToSlack(message, attachmentStr, channel string, status MessageStatus) error {
+	if attachmentStr == "" {
+		attachmentStr = message
+		message = ""
+	}
+
 	attachment := slack.Attachment{
-		Color: StatusColor[status],
-		Text:  message,
+		Color:      StatusColor[status],
+		Title:      message,
+		MarkdownIn: []string{""},
+		Text:       attachmentStr,
 	}
 
 	api := slack.New(sl.Token)
