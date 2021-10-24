@@ -92,7 +92,7 @@ func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 
 			if strings.Contains(event.Substitutions.BranchName, "/") {
 				// Do not show notifications for side branches, like feat/, fix/, doc/ and so on
-				continue
+				return nil
 			}
 
 			err := senders.SendNotification(event, channel, w, w.Config.Config)
