@@ -1,0 +1,32 @@
+{
+    "alertStrategy": {
+        "autoClose": "604800s"
+    },
+    "combiner": "OR",
+    "conditions": [
+        {
+            "conditionThreshold": {
+                "aggregations": [
+                    {
+                        "alignmentPeriod": "60s",
+                        "crossSeriesReducer": "REDUCE_MAX",
+                        "groupByFields": [
+                            "resource.label.namespace_name",
+                            "resource.label.container_name",
+                            "resource.label.cluster_name"
+                        ],
+                        "perSeriesAligner": "ALIGN_DELTA"
+                    }
+                ],
+                "comparison": "COMPARISON_GT",
+                "duration": "0s",
+                "filter": "metric.type=\"kubernetes.io/container/restart_count\" resource.type=\"k8s_container\"",
+                "trigger": {
+                    "count": 1
+                }
+            },
+            "displayName": "Kubernetes container restarted"
+        }
+    ],
+    "displayName": "k8s-container-restarted"
+}

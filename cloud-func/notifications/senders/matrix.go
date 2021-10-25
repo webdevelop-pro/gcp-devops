@@ -15,7 +15,7 @@ type MatrixPayload struct {
 	DisplayName string `json:"displayName"`
 }
 
-func SendToMatrix(message, webhook string, status MessageStatus) error {
+func SendToMatrix(message, attachment, webhook string, status MessageStatus) error {
 	payload := MatrixPayload{
 		Text:        message,
 		Format:      "html",
