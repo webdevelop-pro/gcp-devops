@@ -11,6 +11,7 @@ var (
 	Failure       MessageStatus = "FAILURE"
 	Timeout       MessageStatus = "TIMEOUT"
 	InternalError MessageStatus = "INTERNAL_ERROR"
+	Unknow        MessageStatus = "UNKNOW"
 )
 
 var StatusColor = map[MessageStatus]string{
@@ -18,6 +19,7 @@ var StatusColor = map[MessageStatus]string{
 	Failure:       "#EA4335", // red
 	Timeout:       "#FBBC05", // yellow
 	InternalError: "#EA4335", // red
+	Unknow:        "#707070", // gray44
 }
 
 type ChannelType string
