@@ -124,7 +124,7 @@ func (w worker) CreateMessage(event interface{}) (string, error) {
 	msgTemplate := "<" + serviceLink + "|{{ .Resource.Labels.ContainerName }}> - <" + logLink + "|full log>"
 
 	if lr.JsonPayload.Message == "" {
-		msgTemplate = "Invalid log format!!! Please configure logger for this app!"
+		msgTemplate = "Invalid log format!!! Please configure logger for this app <" + logLink + "|full log>!"
 	}
 
 	return RenderTemplate(msgTemplate, lr)
