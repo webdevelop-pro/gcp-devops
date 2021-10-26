@@ -8,7 +8,7 @@ cat > /tmp/cloudbuild.env << EOF
 SLACK_TOKEN: ${env_slack_bot_token}
 GIT_REPO_OWNER: ${env_github_repo_owner}
 GITHUB_ACCESS_TOKEN: ${env_github_access_token}
-CHANNELS: '${env_build_notifications}'
+CHANNELS: ${env_build_notifications}
 EOF
 
   gcloud functions deploy build-notifications \
