@@ -6,3 +6,8 @@ def b64encode(s):
 
 def to_json(s):
     return json.dumps(s)
+
+def to_json_escape(s):
+    ss = json.dumps(s)
+    sss = json.dumps(ss)
+    return sss[1:-1]
