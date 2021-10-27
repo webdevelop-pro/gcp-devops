@@ -63,7 +63,7 @@ func Subscribe(ctx context.Context, m PubSubMessage) error {
 
 	err = worker.ProcessEvent(ctx, m)
 	if err != nil {
-		log.Error().Err(err).Msg("invalid config")
+		log.Error().Err(err).Interface("conf", conf).Msg("invalid config")
 	}
 
 	return err
@@ -130,13 +130,19 @@ func (w Worker) CreateMessage(e interface{}) (string, error) {
 		return "", err
 	}
 
+  /*
+  log := logger.GetDefaultLogger(nil)
+  log.Info().Interface("event", event).Msg("e")
+  log.Info().Interface("commit", commit).Msg("c")
+  */
+
 	msgTemplate := "Build <{{ .Event.LogURL }}|{{ .Event.Status }}>, " +
 		"Commit: <{{ .Commit.URL }}|{{ .Event.Substitutions.ShortSha }}>" +
 		"\n" +
-		"Author: <https://github.com/{{ .Commit.AuthorLogin }}|{{ .Commit.AuthorName }}>, Branch: <https://github.com/{{ .Event.Substitutions.RepoName }}/tree/{{ .Event.Substitutions.BranchName }}|{{ .Event.Substitutions.BranchName }}>" +
+		"Author: <https://github.com/{{ or .Commit.AuthorName .Commit.AuthorLogin }}|{{ .Commit.AuthorName }}>, Branch: <https://github.com/{{ .Event.Substitutions.RepoName }}/tree/{{ .Event.Substitutions.BranchName }}|{{ .Event.Substitutions.BranchName }}>" +
 		"\n" +
-		"{{ .Commit.Message }}" +
-		"\nDuration: {{ .Duration }}"
+		"Duration: {{ .Duration }}\n\n" +
+		"{{ .Commit.Message }}"
 
 	return RenderTemplate(
 		msgTemplate,
