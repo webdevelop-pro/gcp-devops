@@ -10,7 +10,7 @@ function create_logs_cloudfunc()
 
     cat > /tmp/logs.env << EOF
 SLACK_TOKEN: ${env_slack_bot_token}
-CHANNELS: ${env_logs_notifications}
+CHANNELS: '${env_logs_notifications}'
 EOF
 
   gcloud functions deploy ${FUNCTION_NAME} \

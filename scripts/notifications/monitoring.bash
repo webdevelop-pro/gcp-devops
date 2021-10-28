@@ -51,7 +51,7 @@ function create_monitoring_cloudfunc()
 
     cat > /tmp/monitoring.env << EOF
 SLACK_TOKEN: ${env_slack_bot_token}
-CHANNELS: ${env_monitoring_notifications}
+CHANNELS: '${env_monitoring_notifications}'
 EOF
 
   gcloud functions deploy monitoring-notifications \
