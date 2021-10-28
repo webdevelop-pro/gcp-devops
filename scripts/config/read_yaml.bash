@@ -16,7 +16,7 @@ function join_configs()
     for CONFIG in $(ls ${ENV_DIR})
     do
         cp ${ENV_CONFIG} ${TMP_CONFIG}
-        yq -P eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' ${TMP_CONFIG} ${ENV_DIR}/${CONFIG} > ${ENV_CONFIG}
+        yq -P eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' ${TMP_CONFIG} ${ENV_DIR}/${CONFIG} | sed "s/'/\"/g" > ${ENV_CONFIG}
     done
 }
 
