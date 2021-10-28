@@ -39,3 +39,9 @@ function disable_cdn()
         --project ${env_project_id} \
         --no-enable-cdn
 }
+
+function delete_files_after_30_days() {
+  BUCKET_NAME=$1
+  gsutil lifecycle set ./core/scripts/buckets/delete-files-30-days.json gs://$BUCKET_NAME
+}
+
