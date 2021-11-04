@@ -5,11 +5,11 @@ HTTPS_LB_NAME="apps-https-lb"
 function create_backend_bucket_lb() {
   SERVICE_NAME=$1
   DOMAIN_RECORD=$2
-  BACKEND_BUCKET_NAME=$3
+  BUCKET_NAME=$3
   PATH_NAME_PREFIX=$4
 
-  BUCKET_NAME="$(echo ${DOMAIN_RECORD} | sed 's/\./-/g')"
-  PATH_MATCHER_NAME="${PATH_NAME_PREFIX}${ENV_NAME}-${SERVICE_NAME}-matcher"
+  BACKEND_BUCKET_NAME="${SERVICE_NAME}-${env_name}-backend-bucket"
+  PATH_MATCHER_NAME="${PATH_NAME_PREFIX}${env_name}-${SERVICE_NAME}-matcher"
 
   gsutil mb -p ${env_project_id} -l ${env_project_buckets_location} -c standard -b on gs://${BUCKET_NAME}
 
