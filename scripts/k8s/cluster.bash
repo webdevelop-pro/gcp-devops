@@ -27,6 +27,8 @@ function create_namespaces()
 
 function setup_cloudbuild()
 {
+    PROJECT_NUMBER=$(gcloud projects describe ${env_project_id} --format json | jq '.projectNumber' | tr -d '"')
+
     gcloud services enable --project ${env_project_id} cloudbuild.googleapis.com
 
     gcloud iam service-accounts --project ${env_project_id} create kuberengine --display-name "CI/CD deployment"
@@ -42,6 +44,10 @@ function setup_cloudbuild()
     gcloud projects add-iam-policy-binding ${env_project_id} \
         --member serviceAccount:kuberengine@${env_project_id}.iam.gserviceaccount.com \
         --role roles/storage.admin
+
+    gcloud projects add-iam-policy-binding ${env_project_id} \
+        --member serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
+        --role roles/compute.admin
 }
 
 function setup_cloudsql_proxy()
