@@ -83,18 +83,17 @@ func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 	var event EventRecord
 	json.Unmarshal(m.Data, &event)
 
+  if strings.Contains(event.Substitutions.BranchName, "/") {
+    // Do not show notifications for side branches, like feat/, fix/, doc/ and so on
+    return nil
+  }
+
 	if event.Status != "SUCCESS" && event.Status != "FAILURE" && event.Status != "TIMEOUT" {
 		return nil
 	}
 
 	send := func(output []senders.Channel) error {
 		for _, channel := range output {
-
-			if strings.Contains(event.Substitutions.BranchName, "/") {
-				// Do not show notifications for side branches, like feat/, fix/, doc/ and so on
-				return nil
-			}
-
 			err := senders.SendNotification(event, channel, w, w.Config.Config)
 			if err != nil {
 				return err
