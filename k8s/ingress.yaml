@@ -4,6 +4,8 @@
   {{ 0/0 }} # Please add this deployment to apps list
 {%- endif %}
 
+{%- set app = env.apps[service_name] %}
+{%- if app.get('deploy', false) %}
 {%- if 'ingress' in env.apps[service_name] %}
 
 {%- set ingress = env.apps[service_name].ingress %}
@@ -52,4 +54,5 @@ spec:
   {%- endfor %}
     secretName: "{{ service_name }}-certs"
 
+{%- endif %}
 {%- endif %}

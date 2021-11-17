@@ -4,6 +4,8 @@
   {{ 0/0 }} # Please add this deployment to apps list
 {%- endif %}
 
+{%- set app = env.apps[service_name] %}
+{%- if app.get('deploy', false) %}
 {%- if 'configmap' in env.apps[service_name] %}
 
 {%- set configmap = env.apps[service_name].configmap %}
@@ -15,6 +17,8 @@ data:
 {%- if '.' in key %}
   {{ key }}: |
     {{ value | indent }}
+{%- elif '"' in value  %}
+  {{ key }}: {{ value }}
 {%- else %}
   {{ key }}: "{{ value }}"
 {%- endif %}
@@ -24,4 +28,5 @@ kind: ConfigMap
 metadata:
   name: "{{ service_name }}"
   namespace: "{{ env.k8s.apps.namespace }}"
+{%- endif %}
 {%- endif %}
