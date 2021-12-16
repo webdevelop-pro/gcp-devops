@@ -5,6 +5,7 @@ BASE_PATH=$(dirname "$0")/../core
 ENV_CONFIG="/tmp/env_config.yaml"
 DEPLOY_CONFIG="/tmp/deploy_config.yaml"
 TMP_CONFIG="/tmp/config.yaml"
+PREV_ENV_CONFIG="/tmp/env_prev_config.yaml"
 
 source ${BASE_PATH}/etc/parse_yaml.sh
 
@@ -24,7 +25,22 @@ function read_config()
 {
     join_configs $1
 
-    j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -o ${DEPLOY_CONFIG} ${ENV_CONFIG} ${ENV_CONFIG}
+    i=0
+    touch ${PREV_ENV_CONFIG}
+    while [[ $(diff ${PREV_ENV_CONFIG} ${ENV_CONFIG}) != "s" ]]; do
+        j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -o ${DEPLOY_CONFIG} ${ENV_CONFIG} ${ENV_CONFIG}
+
+        cp ${ENV_CONFIG} ${PREV_ENV_CONFIG}
+        cp ${DEPLOY_CONFIG} ${ENV_CONFIG}
+
+        i=$(( i++ ))
+
+        if [[ i > 10 ]]; then
+            >&2 echo "loop dependency detected!"
+            exit 2
+        fi
+
+    done
 
     eval $(parse_yaml ${DEPLOY_CONFIG})
 
