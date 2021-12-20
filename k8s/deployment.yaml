@@ -34,6 +34,7 @@
     .get('cpu', env.k8s.apps.defaults.resources.requests.cpu)
 %}
 
+{% if app.get('kind', 'Deployment') == 'Deployment' %}
 {% if app.get('deploy', false) %}
 ---
 apiVersion: apps/v1
@@ -200,4 +201,5 @@ spec:
               scheme: HTTP
           {%- endif %}
 
+{% endif %}
 {% endif %}

@@ -27,7 +27,7 @@ function read_config()
 
     i=0
     touch ${PREV_ENV_CONFIG}
-    while [[ $(diff ${PREV_ENV_CONFIG} ${ENV_CONFIG}) != "s" ]]; do
+    while [[ $(diff ${PREV_ENV_CONFIG} ${ENV_CONFIG}) != "" ]]; do
         j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -o ${DEPLOY_CONFIG} ${ENV_CONFIG} ${ENV_CONFIG}
 
         cp ${ENV_CONFIG} ${PREV_ENV_CONFIG}

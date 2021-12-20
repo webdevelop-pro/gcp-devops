@@ -1,0 +1,165 @@
+{% set service_name = os.filename.split('.')[0] %}
+
+{% if not service_name in env.apps %}
+  {{ 0/0 }} # Please add this deployment to apps list
+{% endif %}
+
+{%- set app = env.apps[service_name] %}
+
+{%
+  set _memory_limit = app
+    .get('resources', {})
+    .get('limits', {})
+    .get('memory', env.k8s.apps.defaults.resources.limits.memory)
+%}
+
+{%
+  set _cpu_limit = app
+    .get('resources', {})
+    .get('limits', {})
+    .get('cpu', env.k8s.apps.defaults.resources.limits.cpu)
+%}
+
+{%
+  set _memory_request = app
+    .get('resources', {})
+    .get('requests', {})
+    .get('memory', env.k8s.apps.defaults.resources.requests.memory)
+%}
+
+{%
+  set _cpu_request = app
+    .get('resources', {})
+    .get('requests', {})
+    .get('cpu', env.k8s.apps.defaults.resources.requests.cpu)
+%}
+
+
+{% if app.get('deploy', false) %}
+{% if app.get('kind', 'Deployment') == 'CronJob' %}
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ service_name }}"
+  namespace: "{{ env.k8s.apps.namespace }}"
+  labels:
+    app: "{{ service_name }}"
+spec:
+  schedule: "{{ app.get('cronjob', {}).schedule }}"
+  concurrencyPolicy: {{ app.get('cronjob', {}).get('concurrencyPolicy', Replace) }}
+  successfulJobsHistoryLimit: {{ app.get('cronjob', {}).get('successfulJobsHistoryLimit', 1) }}
+  failedJobsHistoryLimit: {{ app.get('cronjob', {}).get('failedJobsHistoryLimit', 3) }}
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          volumes:
+            {%- if app.get('db_proxy', {}).get('enable', false) %}
+            - name: db-credentials-json
+              secret:
+                defaultMode: 420
+                secretName: cloudsql-instance-credentials
+            {%- endif %}
+            {%- for name, value in app.get('mount', {}).items() %}
+            - name: "{{ name }}"
+              {%- if value.secret is defined %}
+              secret:
+                defaultMode: 420
+                secretName: "{{ value.secret.name }}"
+              {%- endif %}
+
+              {%- if value.configmap is defined %}
+              configMap:
+                name: "{{ value.configmap.name | default(service_name) }}"
+                {%- if value.configmap.items is defined %}
+                items:
+                  {%- for key in value.configmap.get('items', []) %}
+                  - key: "{{ key }}"
+                    path: "{{ key }}"
+                  {%- endfor %}
+                {%- endif %}
+              {%- endif %}
+            {%- endfor %}
+
+          restartPolicy: Never
+          shareProcessNamespace: true
+          containers:
+
+            {%- if app.get('db_proxy', {}).get('enable', false) %}
+            - command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  /cloud_sql_proxy -instances={{ env.project.id }}:{{ env.project.region }}:{{ app.db_proxy.instance }}=tcp:5432 -credential_file=/secrets/cloudsql/service_account.json || echo
+              image: gcr.io/cloudsql-docker/gce-proxy:1.11
+              imagePullPolicy: IfNotPresent
+              name: cloudsql-proxy
+              resources: {}
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+              volumeMounts:
+              - mountPath: /secrets/cloudsql
+                name: db-credentials-json
+                readOnly: true
+            {%- endif %}
+
+            - name: "{{ service_name }}"
+              {%- if app.command is defined %}
+              command: {{ app.command }}
+              {%- endif %}
+              {%- if app.args is defined %}
+              args: {{ app.args }}
+              {%- endif %}
+
+              {%- if app.get('image', '') != '' %}
+              image: "{{ app.image }}"
+              {%- else %}
+              image: "{{ env.project.registry }}/{{ env.project.id }}/{{ service_name }}:latest-{{ env.name }}"
+              {%- endif %}
+
+              securityContext:
+                capabilities:
+                  add:
+                    - SYS_PTRACE
+
+              {%- if app.mount is defined %}
+              volumeMounts:
+              {%- for name, value in app.get('mount', {}).items() %}
+              - mountPath: "{{ value.mountPath }}"
+                name: "{{ name }}"
+                readOnly: {{ value.readOnly }}
+              {%- endfor %}
+              {%- endif %}
+
+              env:
+              {%- for var in app.get('env', []) %}
+              - name: "{{ var.name }}"
+                valueFrom:
+                  {%- if var.get('secret', false) %}
+                  secretKeyRef:
+                  {%- else %}
+                  configMapKeyRef:
+                  {%- endif %}
+                    key: "{{ var.get('key', var.name)  }}"
+                    name: "{{ var.get('from', service_name) }}"
+              {%- endfor %}
+
+              resources:
+                limits:
+                  memory: {{ _memory_limit }}
+                  cpu: {{ _cpu_limit }}
+                requests:
+                  memory: {{ _memory_request }}
+                  cpu: {{ _cpu_request }}
+              {%- if app.ports is defined %}
+              ports:
+              {%- for name, port in app.get('ports', {}).items() %}
+                - containerPort: {{ port }}
+                  name: "{{ name }}"
+                  protocol: TCP
+              {%- endfor %}
+              {%- endif %}
+
+{% endif %}
+{% endif %}
