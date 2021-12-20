@@ -36,7 +36,7 @@ function render_templates()
         # use env config for render global config
         if [[ ${FILENAME} != 'cloudsql-instance-credentials.yaml' ]]
         then
-            j2 ${GLOBAL_CONFIGS}/${FILENAME} ${DEPLOY_CONFIG} >> ${TMP_CONFIG}
+            j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -e os ${GLOBAL_CONFIGS}/${FILENAME} ${DEPLOY_CONFIG} >> ${TMP_CONFIG}
         else
             cat ${GLOBAL_CONFIGS}/${FILENAME} >> ${TMP_CONFIG}
         fi

@@ -7,6 +7,8 @@ DEPLOY_CONFIG="/tmp/deploy_config.yaml"
 TMP_CONFIG="/tmp/config.yaml"
 PREV_ENV_CONFIG="/tmp/env_prev_config.yaml"
 
+rm -f ${ENV_CONFIG} ${DEPLOY_CONFIG} ${TMP_CONFIG} ${PREV_ENV_CONFIG}
+
 source ${BASE_PATH}/etc/parse_yaml.sh
 
 function join_configs()
@@ -33,9 +35,9 @@ function read_config()
         cp ${ENV_CONFIG} ${PREV_ENV_CONFIG}
         cp ${DEPLOY_CONFIG} ${ENV_CONFIG}
 
-        i=$(( i++ ))
+        (( i++ ))
 
-        if [[ i > 10 ]]; then
+        if (( i > 10 )); then
             >&2 echo "loop dependency detected!"
             exit 2
         fi
