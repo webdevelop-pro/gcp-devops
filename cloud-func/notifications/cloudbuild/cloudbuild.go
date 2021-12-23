@@ -26,6 +26,7 @@ type Config struct {
 type Worker struct {
 	Config
 
+	log       logger.Logger
 	gitClient git.Client
 }
 
@@ -48,6 +49,10 @@ func (e EventRecord) GetStatus() senders.MessageStatus {
 	return senders.MessageStatus(e.Status)
 }
 
+func (e EventRecord) RenderTemplate(templateStr string) (string, error) {
+	return RenderTemplate(templateStr, e)
+}
+
 // Subscribe consumes a Pub/Sub message.
 func Subscribe(ctx context.Context, m PubSubMessage) error {
 	var conf Config
@@ -59,7 +64,7 @@ func Subscribe(ctx context.Context, m PubSubMessage) error {
 		return err
 	}
 
-	worker := NewWorker(conf)
+	worker := NewWorker(conf, log)
 
 	err = worker.ProcessEvent(ctx, m)
 	if err != nil {
@@ -69,9 +74,10 @@ func Subscribe(ctx context.Context, m PubSubMessage) error {
 	return err
 }
 
-func NewWorker(conf Config) Worker {
+func NewWorker(conf Config, log logger.Logger) Worker {
 	return Worker{
 		Config: conf,
+		log:    log,
 		gitClient: git.GithubClient{
 			AccessToken: conf.GithubAccessToken,
 			RepoOwner:   conf.GitRepoOwner,
@@ -83,7 +89,7 @@ func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 	var event EventRecord
 	json.Unmarshal(m.Data, &event)
 
-	if event.Status != "SUCCESS" && event.Status != "FAILURE" && event.Status != "TIMEOUT" {
+	if w.ignoreEvent(event) {
 		return nil
 	}
 
@@ -97,14 +103,14 @@ func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 
 			err := senders.SendNotification(event, channel, w, w.Config.Config)
 			if err != nil {
-				return err
+				w.log.Error().Err(err).Msgf("failed send notification to %s channel", channel.To)
 			}
 		}
 
 		return nil
 	}
 
-	output, ok := w.Channels[event.Substitutions.RepoName]
+	output, ok := w.Channels.Channels[event.Substitutions.RepoName]
 	if ok {
 		err := send(output)
 		if err != nil {
@@ -112,12 +118,26 @@ func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 		}
 	}
 
-	err := send(w.Channels["all"])
+	err := send(w.Channels.Channels["all"])
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (w Worker) ignoreEvent(event EventRecord) bool {
+	if event.Status != "SUCCESS" && event.Status != "FAILURE" && event.Status != "TIMEOUT" {
+		return true
+	}
+
+	if ignore, exist := w.Config.Channels.Ignore[event.Substitutions.RepoName]; exist {
+		if ignore.Branch == event.Substitutions.BranchName || ignore.Branch == "all" || ignore.Branch == "" {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (w Worker) CreateMessage(e interface{}) (string, error) {
@@ -129,12 +149,6 @@ func (w Worker) CreateMessage(e interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-  /*
-  log := logger.GetDefaultLogger(nil)
-  log.Info().Interface("event", event).Msg("e")
-  log.Info().Interface("commit", commit).Msg("c")
-  */
 
 	msgTemplate := "Build <{{ .Event.LogURL }}|{{ .Event.Status }}>, " +
 		"Commit: <{{ .Commit.URL }}|{{ .Event.Substitutions.ShortSha }}>" +

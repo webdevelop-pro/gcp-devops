@@ -44,6 +44,10 @@ function read_config()
 
     done
 
+    sed 's/((/{{/g' ${DEPLOY_CONFIG} | sed 's/))/}}/g' > /tmp/new_deploy.yaml
+
+    cp /tmp/new_deploy.yaml ${DEPLOY_CONFIG}
+
     eval $(parse_yaml ${DEPLOY_CONFIG})
 
     set

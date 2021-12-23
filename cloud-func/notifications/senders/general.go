@@ -15,6 +15,7 @@ type MessageCreator interface {
 
 type Event interface {
 	GetStatus() MessageStatus
+	RenderTemplate(templateStr string) (string, error)
 }
 
 func SendNotification(event Event, channel Channel, mc MessageCreator, cfg Config) error {
@@ -33,10 +34,15 @@ func SendNotification(event Event, channel Channel, mc MessageCreator, cfg Confi
 		Slack:  SlackSender{Token: cfg.SlackToken}.SendToSlack,
 	}
 
+	to, err := event.RenderTemplate(channel.To)
+	if err != nil {
+		return err
+	}
+
 	err = routes[channel.Type](
 		message,
 		attachment,
-		channel.To,
+		to,
 		event.GetStatus(),
 	)
 	if err != nil {

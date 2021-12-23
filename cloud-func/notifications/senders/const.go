@@ -34,7 +34,14 @@ type Channel struct {
 	To   string      `json:"to"`
 }
 
-type ChannelsMap map[string][]Channel
+type Ignore struct {
+	Branch string `json:"branch"`
+}
+
+type ChannelsMap struct {
+	Channels map[string][]Channel `json:"channels"`
+	Ignore   map[string]Ignore    `json:"ignore"`
+}
 
 type ChannelsArray []Channel
 
