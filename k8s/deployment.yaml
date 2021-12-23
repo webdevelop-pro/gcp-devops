@@ -50,7 +50,7 @@ spec:
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-    type: RollingUpdate
+    type: {{ app.get('update', {}).get('strategy', 'RollingUpdate') }}
   selector:
     matchLabels:
       app: "{{ service_name }}"
