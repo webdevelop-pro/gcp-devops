@@ -73,6 +73,10 @@ func (lr LogRecord) GetStatus() senders.MessageStatus {
 	}
 }
 
+func (lr LogRecord) RenderTemplate(templateStr string) (string, error) {
+	return RenderTemplate(templateStr, lr)
+}
+
 // Subscribe consumes a Pub/Sub message.
 func Subscribe(ctx context.Context, m PubSubMessage) error {
 	var conf config

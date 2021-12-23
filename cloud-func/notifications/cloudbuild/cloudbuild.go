@@ -74,9 +74,10 @@ func Subscribe(ctx context.Context, m PubSubMessage) error {
 	return err
 }
 
-func NewWorker(conf Config) Worker {
+func NewWorker(conf Config, log logger.Logger) Worker {
 	return Worker{
 		Config: conf,
+		log:    log,
 		gitClient: git.GithubClient{
 			AccessToken: conf.GithubAccessToken,
 			RepoOwner:   conf.GitRepoOwner,
@@ -88,7 +89,7 @@ func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 	var event EventRecord
 	json.Unmarshal(m.Data, &event)
 
-	if w.CheckEvent(event) {
+	if w.ignoreEvent(event) {
 		return nil
 	}
 
@@ -125,18 +126,18 @@ func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 	return nil
 }
 
-func (w Worker) CheckEvent(event EventRecord) bool {
+func (w Worker) ignoreEvent(event EventRecord) bool {
 	if event.Status != "SUCCESS" && event.Status != "FAILURE" && event.Status != "TIMEOUT" {
-		return false
+		return true
 	}
 
 	if ignore, exist := w.Config.Channels.Ignore[event.Substitutions.RepoName]; exist {
 		if ignore.Branch == event.Substitutions.BranchName || ignore.Branch == "all" || ignore.Branch == "" {
-			return false
+			return true
 		}
 	}
 
-	return true
+	return false
 }
 
 func (w Worker) CreateMessage(e interface{}) (string, error) {

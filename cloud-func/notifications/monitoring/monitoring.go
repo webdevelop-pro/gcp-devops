@@ -44,6 +44,10 @@ func (a Alert) GetStatus() senders.MessageStatus {
 	}
 }
 
+func (a Alert) RenderTemplate(templateStr string) (string, error) {
+	return RenderTemplate(templateStr, a)
+}
+
 // Subscribe consumes a Pub/Sub message.
 func Subscribe(ctx context.Context, m PubSubMessage) error {
 	var conf config
