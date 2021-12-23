@@ -95,12 +95,6 @@ func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 
 	send := func(output []senders.Channel) error {
 		for _, channel := range output {
-
-			if strings.Contains(event.Substitutions.BranchName, "/") {
-				// Do not show notifications for side branches, like feat/, fix/, doc/ and so on
-				return nil
-			}
-
 			err := senders.SendNotification(event, channel, w, w.Config.Config)
 			if err != nil {
 				w.log.Error().Err(err).Msgf("failed send notification to %s channel", channel.To)
@@ -135,6 +129,11 @@ func (w Worker) ignoreEvent(event EventRecord) bool {
 		if ignore.Branch == event.Substitutions.BranchName || ignore.Branch == "all" || ignore.Branch == "" {
 			return true
 		}
+	}
+
+	if strings.Contains(event.Substitutions.BranchName, "/") {
+		// Do not show notifications for side branches, like feat/, fix/, doc/ and so on
+		return true
 	}
 
 	return false
