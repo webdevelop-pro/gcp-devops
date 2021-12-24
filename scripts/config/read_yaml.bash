@@ -50,5 +50,5 @@ function read_config()
 
     eval $(parse_yaml ${DEPLOY_CONFIG})
 
-    set
+    set | sed "s/[ ]*#[^\']*//"
 }
