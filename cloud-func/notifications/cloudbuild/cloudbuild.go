@@ -97,7 +97,7 @@ func (w Worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 		for _, channel := range output {
 			err := senders.SendNotification(event, channel, w, w.Config.Config)
 			if err != nil {
-				w.log.Error().Err(err).Msgf("failed send notification to %s channel", channel.To)
+				w.log.Warn().Err(err).Msgf("failed send notification to %s channel", channel.To)
 			}
 		}
 

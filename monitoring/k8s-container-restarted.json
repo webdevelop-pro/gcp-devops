@@ -13,7 +13,9 @@
                         "groupByFields": [
                             "resource.label.namespace_name",
                             "resource.label.container_name",
-                            "resource.label.cluster_name"
+                            "resource.label.cluster_name",
+                            "resource.label.pod_name",
+                            "metadata.user_labels.channel"
                         ],
                         "perSeriesAligner": "ALIGN_DELTA"
                     }

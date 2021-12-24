@@ -58,7 +58,8 @@ spec:
     metadata:
       labels:
         app: "{{ service_name }}"
-        logsNotifications: "{{ app.get('logs_notifications', true) | to_json }}"
+        logsNotifications: "{{ app.get('logs_notifications', app.get('notifications', {}).get('logs', true)) | to_json }}"
+        channel: "{{ app.get('notifications', {}).get('channel_label', 'other') }}"
     spec:
       volumes:
         {%- if app.get('db_proxy', {}).get('enable', false) %}
