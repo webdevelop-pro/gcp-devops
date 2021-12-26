@@ -5,7 +5,6 @@
 {%- endif %}
 
 {%- set app = env.apps[service_name] %}
-{%- if app.get('deploy', false) %}
 {%- if 'configmap' in env.apps[service_name] %}
 
 {%- set configmap = env.apps[service_name].configmap %}
@@ -32,5 +31,4 @@ kind: ConfigMap
 metadata:
   name: "{{ service_name }}"
   namespace: "{{ env.k8s.apps.namespace }}"
-{%- endif %}
 {%- endif %}
