@@ -20,6 +20,8 @@ type config struct {
 type worker struct {
 	config
 
+	log logger.Logger
+
 	gitClient git.Client
 }
 
@@ -28,6 +30,8 @@ type LogRecord struct {
 	Timestamp   string `json:"timestamp"`
 	InsertID    string `json:"insertId"`
 	TextPayload string `json:"textPayload"`
+
+	Labels map[string]string `json:"labels"`
 
 	JsonPayload struct {
 		Component   string `json:"component"`
@@ -73,6 +77,10 @@ func (lr LogRecord) GetStatus() senders.MessageStatus {
 	}
 }
 
+func (lr LogRecord) RenderTemplate(templateStr string) (string, error) {
+	return RenderTemplate(templateStr, lr)
+}
+
 // Subscribe consumes a Pub/Sub message.
 func Subscribe(ctx context.Context, m PubSubMessage) error {
 	var conf config
@@ -84,7 +92,7 @@ func Subscribe(ctx context.Context, m PubSubMessage) error {
 		return err
 	}
 
-	worker := worker{config: conf}
+	worker := worker{config: conf, log: log}
 
 	err = worker.ProcessEvent(ctx, m)
 	if err != nil {
@@ -104,7 +112,7 @@ func (w worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 	for _, channel := range w.config.Channels {
 		err := senders.SendNotification(logRecord, channel, w, w.config.Config)
 		if err != nil {
-			return err
+			w.log.Warn().Err(err).Msgf("failed send notification to %s channel", channel.To)
 		}
 	}
 

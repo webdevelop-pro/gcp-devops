@@ -36,7 +36,7 @@ function render_templates()
         # use env config for render global config
         if [[ ${FILENAME} != 'cloudsql-instance-credentials.yaml' ]]
         then
-            j2 ${GLOBAL_CONFIGS}/${FILENAME} ${DEPLOY_CONFIG} >> ${TMP_CONFIG}
+            j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -e os ${GLOBAL_CONFIGS}/${FILENAME} ${DEPLOY_CONFIG} >> ${TMP_CONFIG}
         else
             cat ${GLOBAL_CONFIGS}/${FILENAME} >> ${TMP_CONFIG}
         fi
@@ -68,6 +68,9 @@ function render_templates()
         # Render deployment for app
         render_template ${OUTPUT_DIR} deployment.yaml
 
+        # Render cronjob for app
+        render_template ${OUTPUT_DIR} cronjob.yaml
+
         # Render service for app
         render_template ${OUTPUT_DIR} service.yaml
 
@@ -95,6 +98,8 @@ function deploy()
     deploy_secret
 
     deploy_deployment
+
+    deploy_cronjob
 
     deploy_service
 
@@ -138,6 +143,20 @@ function deploy_deployment()
     for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
     do
         K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/deployment.yaml"
+
+        echo "Apply ${K8S_MANIFEST}"
+
+        if [ -f ${K8S_MANIFEST} ]; then
+            cat ${K8S_MANIFEST} | kubectl apply -f -
+        fi
+    done
+}
+
+function deploy_cronjob()
+{
+    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
+    do
+        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/cronjob.yaml"
 
         echo "Apply ${K8S_MANIFEST}"
 

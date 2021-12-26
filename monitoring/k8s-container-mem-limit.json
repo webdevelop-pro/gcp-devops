@@ -8,13 +8,14 @@
             "conditionThreshold": {
                 "aggregations": [
                     {
-                        "alignmentPeriod": "300s",
+                        "alignmentPeriod": "60s",
                         "crossSeriesReducer": "REDUCE_MAX",
                         "groupByFields": [
                             "resource.label.cluster_name",
                             "resource.label.namespace_name",
                             "resource.label.container_name",
-                            "resource.label.pod_name"
+                            "resource.label.pod_name",
+                            "metadata.user_labels.channel"
                         ],
                         "perSeriesAligner": "ALIGN_MAX"
                     }

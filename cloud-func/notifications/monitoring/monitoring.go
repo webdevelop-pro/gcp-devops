@@ -20,6 +20,8 @@ type config struct {
 type worker struct {
 	config
 
+	log logger.Logger
+
 	gitClient git.Client
 }
 
@@ -28,6 +30,9 @@ type Incident struct {
 	Resource      struct {
 		Labels map[string]string `json:"labels"`
 	} `json:"resource"`
+	Metadata struct {
+		UserLabels map[string]string `json:"user_labels"`
+	} `json:"metadata"`
 	URL   string `json:"url"`
 	State string `json:"state"`
 }
@@ -44,6 +49,10 @@ func (a Alert) GetStatus() senders.MessageStatus {
 	}
 }
 
+func (a Alert) RenderTemplate(templateStr string) (string, error) {
+	return RenderTemplate(templateStr, a)
+}
+
 // Subscribe consumes a Pub/Sub message.
 func Subscribe(ctx context.Context, m PubSubMessage) error {
 	var conf config
@@ -55,7 +64,7 @@ func Subscribe(ctx context.Context, m PubSubMessage) error {
 		return err
 	}
 
-	worker := NewWorker(conf)
+	worker := NewWorker(conf, log)
 
 	err = worker.ProcessEvent(ctx, m)
 	if err != nil {
@@ -65,9 +74,10 @@ func Subscribe(ctx context.Context, m PubSubMessage) error {
 	return err
 }
 
-func NewWorker(conf config) worker {
+func NewWorker(conf config, log logger.Logger) worker {
 	return worker{
 		config: conf,
+		log:    log,
 	}
 }
 
@@ -78,7 +88,7 @@ func (w worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 	for _, channel := range w.config.Channels {
 		err := senders.SendNotification(alert, channel, w, w.config.Config)
 		if err != nil {
-			return err
+			w.log.Warn().Err(err).Msgf("failed send notification to %s channel", channel.To)
 		}
 	}
 

@@ -17,6 +17,10 @@ data:
 {%- if '.' in key %}
   {{ key }}: |
     {{ value | indent }}
+{%- elif value is number %}
+  {{ key }}: "{{ value }}"
+{%- elif '{' in value  %}
+  {{ key }}: '{{ value }}'
 {%- elif '"' in value  %}
   {{ key }}: {{ value }}
 {%- else %}

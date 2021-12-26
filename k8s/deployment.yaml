@@ -34,6 +34,7 @@
     .get('cpu', env.k8s.apps.defaults.resources.requests.cpu)
 %}
 
+{% if app.get('kind', 'Deployment') == 'Deployment' %}
 {% if app.get('deploy', false) %}
 ---
 apiVersion: apps/v1
@@ -49,7 +50,7 @@ spec:
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-    type: RollingUpdate
+    type: {{ app.get('update', {}).get('strategy', 'RollingUpdate') }}
   selector:
     matchLabels:
       app: "{{ service_name }}"
@@ -57,7 +58,8 @@ spec:
     metadata:
       labels:
         app: "{{ service_name }}"
-        logsNotifications: "{{ app.get('logs_notifications', true) | to_json }}"
+        logsNotifications: "{{ app.get('logs_notifications', app.get('notifications', {}).get('logs', true)) | to_json }}"
+        channel: "{{ app.get('notifications', {}).get('channel_label', 'other') }}"
     spec:
       volumes:
         {%- if app.get('db_proxy', {}).get('enable', false) %}
@@ -200,4 +202,5 @@ spec:
               scheme: HTTP
           {%- endif %}
 
+{% endif %}
 {% endif %}
