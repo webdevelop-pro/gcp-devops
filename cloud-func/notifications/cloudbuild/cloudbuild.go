@@ -38,10 +38,11 @@ type EventRecord struct {
 	FinishTime    time.Time `json:"finishTime"`
 	ProjectId     string    `json:"projectId"`
 	Substitutions struct {
-		RepoName   string `json:"REPO_NAME"`
-		CommitSha  string `json:"COMMIT_SHA"`
-		ShortSha   string `json:"SHORT_SHA"`
-		BranchName string `json:"BRANCH_NAME"`
+		RepoName          string `json:"REPO_NAME"`
+		CommitSha         string `json:"COMMIT_SHA"`
+		ShortSha          string `json:"SHORT_SHA"`
+		BranchName        string `json:"BRANCH_NAME"`
+		NotificationGroup string `json:"_NOTIFICATION_GROUP"`
 	} `json:"substitutions"`
 }
 
