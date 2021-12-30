@@ -1,0 +1,32 @@
+{
+    "alertStrategy": {
+        "autoClose": "604800s"
+    },
+    "combiner": "OR",
+    "conditions": [
+        {
+            "conditionThreshold": {
+                "aggregations": [
+                    {
+                        "alignmentPeriod": "120s",
+                        "crossSeriesReducer": "REDUCE_COUNT_FALSE",
+                        "groupByFields": [
+                            "resource.label.host",
+                            "metric.label.check_id",
+                            "metric.label.checker_location"
+                        ],
+                        "perSeriesAligner": "ALIGN_NEXT_OLDER"
+                    }
+                ],
+                "comparison": "COMPARISON_GT",
+                "duration": "0s",
+                "filter": "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" resource.type=\"uptime_url\" metric.label.\"checker_location\"=\"usa-iowa\"",
+                "trigger": {
+                    "count": 1
+                }
+            },
+            "displayName": "Service unavailable!"
+        }
+    ],
+    "displayName": "uptime-check"
+}
