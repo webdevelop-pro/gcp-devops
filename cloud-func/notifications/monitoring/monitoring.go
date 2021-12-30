@@ -3,6 +3,7 @@ package monitoring
 import (
 	"context"
 	"encoding/json"
+	"strings"
 
 	"github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/git"
 	. "github.com/webdevelop-pro/gcp-devops/cloud-func/notifications/messages" //lint:ignore ST1001 ignore this!
@@ -33,6 +34,10 @@ type Incident struct {
 	Metadata struct {
 		UserLabels map[string]string `json:"user_labels"`
 	} `json:"metadata"`
+	Metric struct {
+		Labels map[string]string `json:"labels"`
+	} `json:"metric"`
+	Group string `json:"-"`
 	URL   string `json:"url"`
 	State string `json:"state"`
 }
@@ -84,6 +89,15 @@ func NewWorker(conf config, log logger.Logger) worker {
 func (w worker) ProcessEvent(ctx context.Context, m PubSubMessage) error {
 	var alert Alert
 	json.Unmarshal(m.Data, &alert)
+
+	if alert.Incident.Metric.Labels != nil {
+		if id, ok := alert.Incident.Metric.Labels["check_id"]; ok {
+			groups := strings.Split(id, "-")
+			if len(groups) > 2 {
+				alert.Incident.Group = groups[len(groups)-2]
+			}
+		}
+	}
 
 	for _, channel := range w.config.Channels {
 		err := senders.SendNotification(alert, channel, w, w.config.Config)

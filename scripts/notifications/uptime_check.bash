@@ -9,7 +9,7 @@ function create_uptime()
     URL_PATH=$3
     GROUP=$4
     TEMPLATE_PATH=${BASE_PATH}/etc/uptime.jinja
-    UPTIME_DEPLOYMENT_NAME="${NAME}-uptimecheck"
+    UPTIME_DEPLOYMENT_NAME="${NAME}-${env_name}-${GROUP}-uptimecheck"
 
     yes | gcloud --project ${env_project_id} deployment-manager deployments delete ${UPTIME_DEPLOYMENT_NAME}
 
@@ -23,7 +23,7 @@ function create_uptime()
           type: /tmp/uptime.jinja
           properties:
             uptimechecks:
-              - name: "${GROUP}"
+              - name: "${UPTIME_DEPLOYMENT_NAME}"
                 period: "60s"
                 timeout: "5s"
                 monitoredResource:
