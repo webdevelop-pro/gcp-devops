@@ -31,7 +31,7 @@ function create_logs_router()
 
   gcloud  --project ${env_project_id} logging sinks create log-errors \
      "pubsub.googleapis.com/projects/${env_project_id}/topics/${TOPIC}" \
-     --log-filter='labels."k8s-pod/logsNotifications" = "true" severity=(ERROR OR CRITICAL OR ALERT OR EMERGENCY) resource.labels.container_name!="cloudsql-proxy"'
+     --log-filter='labels."k8s-pod/logsNotifications" = "true" severity=(ERROR OR CRITICAL OR ALERT OR EMERGENCY) resource.labels.container_name!="cloudsql-proxy" resource.labels.container_name !~ ".*-doc" resource.labels.container_name !~ ".*-redoc"'
 
   WRITER_IDENTITY=$(gcloud  --project ${env_project_id} logging sinks describe log-errors --format json | jq '.writerIdentity' | tr -d '"')
 
