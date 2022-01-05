@@ -33,6 +33,7 @@ function create_uptime()
                     host: "${HOST}"
                 httpCheck:
                   useSsl: true
+                  validateSsl: true
                   path: "${URL_PATH}"
                   port: 443
 EOF
