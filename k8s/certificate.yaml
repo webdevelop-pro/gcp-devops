@@ -8,6 +8,7 @@
 {%- if app.get('deploy', false) %}
 
 {%- if 'ingress' in env.apps[service_name] %}
+{%- if app.ingress.get('ssl', {}).get('le_certificates', false) %}
 
 {%- set ingress = env.apps[service_name].ingress %}
 ---
@@ -27,5 +28,6 @@ spec:
   {%- endfor %}
 
 
+{%- endif %}
 {%- endif %}
 {%- endif %}

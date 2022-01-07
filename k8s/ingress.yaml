@@ -18,7 +18,7 @@ metadata:
   namespace: "{{ env.k8s.apps.namespace }}"
   annotations:
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/ssl-redirect: '{{ ingress.get('ssl', {}).get('redirect_to_https', false) }}'
     {%- if ingress.rewrite_target is defined %}
     nginx.ingress.kubernetes.io/rewrite-target: "{{ ingress.rewrite_target }}"
     {%- endif %}

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CERTIFICATE_NAME="frontend-certificate"
+CERTIFICATE_NAME="$(echo ${env_project_domain} | tr -d '.')"
 
 function create_certificate()
 {

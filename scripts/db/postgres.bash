@@ -4,11 +4,12 @@ function create_database()
 {
   DATABASE=$1
   DATABASE_NAME=$(printenv env_db_databases_${DATABASE}_name)
-  DATABASE_INSTANCE_NAME=$(printenv env_db_databases_${DATABASE}_instance)
-  DATABASE_VERSION=$(printenv env_db_instances_${DATABASE_INSTANCE_NAME}_version)
+  DATABASE_INSTANCE=$(printenv env_db_databases_${DATABASE}_instance)
+  DATABASE_INSTANCE_NAME=$(printenv env_db_instances_${DATABASE_INSTANCE}_name)
+  DATABASE_VERSION=$(printenv env_db_instances_${DATABASE_INSTANCE}_version)
   DATABASE_CPU=1
   DATABASE_MEM="3840MiB"
-  DB_NODE_TYPE=$(printenv env_db_instances_${DATABASE_INSTANCE_NAME}_node_type)
+  DB_NODE_TYPE=$(printenv env_db_instances_${DATABASE_INSTANCE}_node_type)
 
   gcloud sql instances create ${DATABASE_INSTANCE_NAME} \
     --project ${env_project_id} \
@@ -34,7 +35,8 @@ function create_user()
   USER=$1
   USER_NAME=$(printenv env_db_users_${USER}_username)
   USER_PASSWORD=$(printenv env_db_users_${USER}_password)
-  DATABASE_INSTANCE_NAME=$(printenv env_db_users_${USER}_instance)
+  DATABASE_INSTANCE=$(printenv env_db_users_${USER}_instance)
+  DATABASE_INSTANCE_NAME=$(printenv env_db_instances_${DATABASE_INSTANCE}_name)
 
   gcloud beta sql users set-password ${USER_NAME} \
     --project ${env_project_id} \
