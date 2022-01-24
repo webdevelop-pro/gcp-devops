@@ -93,7 +93,7 @@ spec:
         {%- if app.get('db_proxy', {}).get('enable', false) %}
         - command:
             - /cloud_sql_proxy
-            - -instances={{ env.project.id }}:{{ env.project.region }}:{{ app.db_proxy.instance }}=tcp:5432
+            - -instances={{ env.project.id }}:{{ env.project.region }}:{{ env.db.instances[app.db_proxy.instance].name }}=tcp:5432
             - -credential_file=/secrets/cloudsql/service_account.json
           image: gcr.io/cloudsql-docker/gce-proxy:1.11
           imagePullPolicy: IfNotPresent
