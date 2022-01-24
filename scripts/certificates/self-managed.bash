@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+PROXY_NAME="https-lb-proxy"
 CERTIFICATE_NAME="$(echo ${env_project_domain} | tr -d '.')"
 
 function create_certificate()

@@ -69,7 +69,7 @@ function create_backend_service()
   gcloud compute url-maps add-path-matcher ${HTTPS_LB_NAME} \
     --project ${env_project_id} \
     --path-matcher-name=${PATH_MATCHER_NAME} \
-    --new-hosts="*-api-${env_name}.${env_project_domain}" \
+    --new-hosts="*-api${env_dns_url_prefix}" \
     --global \
     --default-service=${BACKEND_SERVICE}
 }
