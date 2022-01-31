@@ -27,18 +27,18 @@ function render_template()
 
 function render_templates()
 {
-    for FILENAME in $(ls ${GLOBAL_CONFIGS})
+    for FILENAME in $(find ${GLOBAL_CONFIGS} -type f)
     do
-        export filename=${FILENAME}
+        export filename=$(basename ${FILENAME})
 
         cat ${DEPLOY_CONFIG} > ${TMP_CONFIG}
 
         # use env config for render global config
         if [[ ${FILENAME} != 'cloudsql-instance-credentials.yaml' ]]
         then
-            j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -e os ${GLOBAL_CONFIGS}/${FILENAME} ${DEPLOY_CONFIG} >> ${TMP_CONFIG}
+            j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -e os ${FILENAME} ${DEPLOY_CONFIG} >> ${TMP_CONFIG}
         else
-            cat ${GLOBAL_CONFIGS}/${FILENAME} >> ${TMP_CONFIG}
+            cat ${FILENAME} >> ${TMP_CONFIG}
         fi
 
         # merge env config with global config (overwrite glbal values with env values) and convert back to yaml
@@ -52,11 +52,12 @@ function render_templates()
 
     rm -rf ${RENDERED_TEMPLATES_DIR}
 
-    for FILENAME in $(ls ${GLOBAL_CONFIGS})
+    for FILENAME in $(find ${GLOBAL_CONFIGS} -type f)
     do
-        export filename=${FILENAME}
+        FILE_NAME=$(basename ${FILENAME})
+        export filename=${FILE_NAME}
 
-        OUTPUT_DIR=apps/${FILENAME}
+        OUTPUT_DIR=apps/${FILE_NAME}
         mkdir -p ${RENDERED_TEMPLATES_DIR}/${OUTPUT_DIR}
 
         # Render configmap for app
