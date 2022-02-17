@@ -43,7 +43,7 @@ function create_backend_service()
   BACKEND_ENDPOINT_GROUP="ingress-${env_name}"
   BACKEND_IP="$(kubectl -n ingress-nginx get svc --template '{{ (index (index .items 0).status.loadBalancer.ingress 0).ip }}')"
   BACKEND_PORT=443
-  BACKEND_SERVICE="${PROJECT_NAME}-service-backend"
+  BACKEND_SERVICE="${env_name}-service-backend"
   PATH_MATCHER_NAME="${env_name}-backend-matcher"
 
   gcloud compute network-endpoint-groups create ${BACKEND_ENDPOINT_GROUP} \
@@ -57,6 +57,7 @@ function create_backend_service()
     --add-endpoint="ip=${BACKEND_IP},port=${BACKEND_PORT}"
 
   gcloud compute backend-services create ${BACKEND_SERVICE} \
+    --protocol=https \
     --project ${env_project_id} \
     --global
 
