@@ -42,7 +42,7 @@ function create_backend_service()
 
   BACKEND_ENDPOINT_GROUP="ingress-${env_name}"
   BACKEND_IP="$(kubectl -n ingress-nginx get svc --template '{{ (index (index .items 0).status.loadBalancer.ingress 0).ip }}')"
-  BACKEND_PORT=80
+  BACKEND_PORT=443
   BACKEND_SERVICE="${PROJECT_NAME}-service-backend"
   PATH_MATCHER_NAME="${env_name}-backend-matcher"
 
