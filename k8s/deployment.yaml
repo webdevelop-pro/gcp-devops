@@ -47,9 +47,11 @@ metadata:
 spec:
   replicas: {{ app.replicas|default(1) }}
   strategy:
+    {% if app.get('update', {}).get('strategy', 'RollingUpdate') == 'RollingUpdate' %}
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
+    {% endif %}
     type: {{ app.get('update', {}).get('strategy', 'RollingUpdate') }}
   selector:
     matchLabels:
@@ -151,6 +153,8 @@ spec:
           {%- endif %}
 
           env:
+          - name: "pod_update_version"
+            value: "{{ app.pod_update_version | default(0) }}"
           {%- for var in app.get('env', []) %}
           - name: "{{ var.name }}"
             valueFrom:
