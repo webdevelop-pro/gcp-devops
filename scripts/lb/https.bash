@@ -39,10 +39,16 @@ function create_https_lb()
 function create_backend_service()
 {
   HOST=$1
+  PATH_MATCHER_NAME=$2
 
   if [ -z $HOST ];
   then
     HOST="*-api${env_dns_url_prefix}"
+  fi
+
+  if [ -z $PATH_MATCHER_NAME ];
+  then
+    PATH_MATCHER_NAME="${env_name}-backend-matcher"
   fi
 
   gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
@@ -51,7 +57,6 @@ function create_backend_service()
   BACKEND_IP="$(kubectl -n ingress-nginx get svc --template '{{ (index (index .items 0).status.loadBalancer.ingress 0).ip }}')"
   BACKEND_PORT=443
   BACKEND_SERVICE="${env_name}-service-backend"
-  PATH_MATCHER_NAME="${env_name}-backend-matcher"
 
   gcloud compute network-endpoint-groups create ${BACKEND_ENDPOINT_GROUP} \
     --project ${env_project_id} \
