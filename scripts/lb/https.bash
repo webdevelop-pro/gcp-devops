@@ -38,6 +38,13 @@ function create_https_lb()
 
 function create_backend_service()
 {
+  HOST=$1
+
+  if [ -z $HOST ];
+  then
+    HOST="*-api${env_dns_url_prefix}"
+  fi
+
   gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
 
   BACKEND_ENDPOINT_GROUP="ingress-${env_name}"
@@ -70,7 +77,7 @@ function create_backend_service()
   gcloud compute url-maps add-path-matcher ${HTTPS_LB_NAME} \
     --project ${env_project_id} \
     --path-matcher-name=${PATH_MATCHER_NAME} \
-    --new-hosts="*-api${env_dns_url_prefix}" \
+    --new-hosts="${HOST}" \
     --global \
     --default-service=${BACKEND_SERVICE}
 }
