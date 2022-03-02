@@ -10,6 +10,11 @@ function create_database()
   DATABASE_CPU=1
   DATABASE_MEM="3840MiB"
   DB_NODE_TYPE=$(printenv env_db_instances_${DATABASE_INSTANCE}_node_type)
+  DB_NODE_AVAILABILITY=$(printenv env_db_instances_${DATABASE_INSTANCE}_availability)
+
+  if [ -z ${DB_NODE_AVAILABILITY} ]; then
+    DB_NODE_AVAILABILITY="zonal"
+  fi
 
   gcloud sql instances create ${DATABASE_INSTANCE_NAME} \
     --project ${env_project_id} \
@@ -26,7 +31,7 @@ function create_database()
     --project ${env_project_id} \
     --tier ${DB_NODE_TYPE} \
     --backup-start-time="00:00" \
-    --availability-type REGIONAL \
+    --availability-type ${DB_NODE_AVAILABILITY} \
     --backup-start-time=00:00
 }
 
