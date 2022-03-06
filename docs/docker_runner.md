@@ -6,12 +6,18 @@ Just run:
 
     ./docker.sh <your command>
 
-
 for run any command inside docker container
 
 For example, you can read config by this command:
 
     source $(./docker.sh read ./configs/env/<env_name>)
+
+than, if you don't login in gcloud tool before please execute:
+
+     ./docker.sh gcloud auth login
+
+**ATENTION!**
+    This overwrite your gcloud credentials inside ~/.config/gcloud
 
 and than you can deploy your apps in kubernetes cluster, by this command:
 
