@@ -9,4 +9,4 @@ RUN apt update -y \
     && mv yq_linux_amd64 /usr/bin/yq \
     && pip install j2cli[yaml]
 
-ENTRYPOINT [ "sleep", "999d" ]
+ENTRYPOINT [ "bash", "-c" ]
