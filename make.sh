@@ -6,7 +6,7 @@ set -e
 
 source ${BASE_PATH}/etc/parse_yaml.sh
 
-DEPLOY_CONFIG="/tmp/deploy_config.yaml"
+DEPLOY_CONFIG="./deploy_config.yaml"
 APP_CONFIG="/tmp/apps_config.yaml"
 TMP_CONFIG="/tmp/tmp_config.yaml"
 DEPLOYMENT_TEMPLATE="/tmp/deployment.yaml"
