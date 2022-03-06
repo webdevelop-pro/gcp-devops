@@ -1,25 +1,19 @@
 # Deploy via docker
 
-We use docker image to package all the dependencies and tools witch you need to deploy your infrastucture.
+To deploy our infrastructure, you **only need to install docker** on your local enviroment, because we use docker image to package all the dependencies and tools witch you need for deploy process.
 
-Just run:
-
-    ./docker.sh <your command>
-
-for run any command inside docker container
-
-For example, you can read config by this command:
-
-    source $(./docker.sh read ./configs/env/<env_name>)
-
-than, if you don't login in gcloud tool before please execute:
+First if you don't login in gcloud tool before please execute:
 
      ./docker.sh gcloud auth login
 
 **ATENTION!**
     This overwrite your gcloud credentials inside ~/.config/gcloud
 
-and than you can deploy your apps in kubernetes cluster, by this command:
+Than you need read env config by this command:
+
+    source $(./docker.sh read ./configs/env/<env_name>)
+
+and than you can run any command inside prepared enviroment inside docker container, for example, deploy apps in kubernetes cluster:
 
     ./docker.sh ./scripts/k8s/deploy_apps.bash deploy
 
@@ -32,3 +26,5 @@ Read config:
 Deploy k8s apps (Just remove):
 
     ./scripts/k8s/deploy_apps.bash deploy
+
+and you need install all dependencies manualy
