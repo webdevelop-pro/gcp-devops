@@ -113,4 +113,7 @@ RUN set -ex \
     \) -exec rm -rf '{}' + \
     && rm -rf /root/.cache
 RUN apt-get update && apt-get install -y --no-install-recommends make git gcc && rm -rf /var/lib/apt/lists/*
+
+RUN pip install markupsafe==2.0.1
+
 CMD ["python3"]
