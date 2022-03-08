@@ -10,6 +10,7 @@ RUN set -ex \
     appnope==0.1.0 \
     asn1crypto==0.24.0 \
     astroid==2.2.5 \
+    markupsafe==2.0.1 \
     async-lru==1.0.2 \
     async-timeout==3.0.1 \
     asyncpg==0.18.3 \
