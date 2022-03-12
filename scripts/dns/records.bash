@@ -6,6 +6,16 @@ function create_dns_record()
 {
   _DOMAIN_RECORD=$1
   _IP=$2
+  _TYPE=$3
+  _TTL=$
+
+  if [[ ${_TYPE} == "" ]]; than
+    _TYPE="A"
+  fi
+
+  if [[ ${_TTL} == "" ]]; than
+    _TTL=300
+  fi
 
   _CURRENT_DOMAIN=$(gcloud dns record-sets list --project ${env_project_id} --zone ${DNS_ZONE_NAME} --format json | jq ".[] | select(.name==\"${_DOMAIN_RECORD}.\")")
 
@@ -21,8 +31,8 @@ function create_dns_record()
     gcloud dns record-sets transaction add ${_IP} \
       --project ${env_project_id} \
       --name=${_DOMAIN_RECORD} \
-      --type=A \
-      --ttl 300 \
+      --type=${_TYPE} \
+      --ttl=${_TTL} \
       --zone=${DNS_ZONE_NAME} \
       --transaction-file=/tmp/transaction.yaml
 
@@ -34,7 +44,7 @@ function create_dns_record()
     gcloud dns record-sets update ${_DOMAIN_RECORD} \
       --project ${env_project_id} \
       --rrdatas ${_IP} \
-      --type=A \
+      --type=${_TYPE} \
       --zone ${DNS_ZONE_NAME}
   fi
 }
