@@ -11,6 +11,8 @@ GITHUB_ACCESS_TOKEN: ${env_github_access_token}
 CHANNELS: '${env_build_notifications}'
 EOF
 
+  cat /tmp/cloudbuild.env | sed "s/''/'/g" > /tmp/cloudbuild_new.env
+
   gcloud functions deploy build-notifications \
      --project ${env_project_id} \
      --runtime go116 \
@@ -18,5 +20,5 @@ EOF
      --allow-unauthenticated \
      --entry-point=CloudBuildSubscribe \
      --source=${BASE_PATH}/../../core/cloud-func/notifications \
-     --env-vars-file=/tmp/cloudbuild.env
+     --env-vars-file=/tmp/cloudbuild_new.env
 }
