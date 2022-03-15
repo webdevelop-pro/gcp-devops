@@ -11,6 +11,8 @@ function create_uptime()
     TEMPLATE_PATH=${BASE_PATH}/etc/uptime.jinja
     UPTIME_DEPLOYMENT_NAME="${NAME}-${env_name}-${GROUP}-uptimecheck"
 
+    NAME=$(echo ${NAME} | sed 's/_/-/g')
+
     yes | gcloud --project ${env_project_id} deployment-manager deployments delete ${UPTIME_DEPLOYMENT_NAME}
 
     cp ${TEMPLATE_PATH} /tmp/uptime.jinja
