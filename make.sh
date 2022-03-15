@@ -27,6 +27,10 @@ function render_template()
 
 function render_templates()
 {
+    sed 's/{{/((/g' ${DEPLOY_CONFIG} | sed 's/}}/))/g' > /tmp/new_deploy.yaml
+
+    cp /tmp/new_deploy.yaml ${DEPLOY_CONFIG}
+
     for FILENAME in $(find ${GLOBAL_CONFIGS} -type f)
     do
         export filename=$(basename ${FILENAME})
