@@ -8,7 +8,7 @@
             "conditionThreshold": {
                 "aggregations": [
                     {
-                        "alignmentPeriod": "120s",
+                        "alignmentPeriod": "300s",
                         "crossSeriesReducer": "REDUCE_COUNT_FALSE",
                         "groupByFields": [
                             "resource.label.host",
@@ -19,7 +19,7 @@
                     }
                 ],
                 "comparison": "COMPARISON_GT",
-                "duration": "0s",
+                "duration": "300s",
                 "filter": "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" resource.type=\"uptime_url\" metric.label.\"checker_location\"=\"usa-iowa\"",
                 "trigger": {
                     "count": 1
