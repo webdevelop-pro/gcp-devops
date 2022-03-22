@@ -7,6 +7,16 @@ function create_backend_bucket_lb() {
   DOMAIN_RECORD=$2
   BUCKET_NAME=$3
   PATH_NAME_PREFIX=$4
+  MAIN_PAGE=$6
+  ERROR_PAGE=$7
+
+  if [[ ${MAIN_PAGE} == "" ]]; then
+    MAIN_PAGE="index.html"
+  fi
+
+  if [[ ${MAIN_PAGE} == "" ]]; then
+    MAIN_PAGE="index.html"
+  fi
 
   BACKEND_BUCKET_NAME="${SERVICE_NAME}-${env_name}-backend-bucket"
   PATH_MATCHER_NAME="${PATH_NAME_PREFIX}${env_name}-${SERVICE_NAME}-matcher"
