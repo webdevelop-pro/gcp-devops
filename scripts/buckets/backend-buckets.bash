@@ -7,15 +7,15 @@ function create_backend_bucket_lb() {
   DOMAIN_RECORD=$2
   BUCKET_NAME=$3
   PATH_NAME_PREFIX=$4
-  MAIN_PAGE=$6
-  ERROR_PAGE=$7
+  MAIN_PAGE=$5
+  ERROR_PAGE=$6
 
   if [[ ${MAIN_PAGE} == "" ]]; then
     MAIN_PAGE="index.html"
   fi
 
-  if [[ ${MAIN_PAGE} == "" ]]; then
-    MAIN_PAGE="index.html"
+  if [[ ${ERROR_PAGE} == "" ]]; then
+    ERROR_PAGE="index.html"
   fi
 
   BACKEND_BUCKET_NAME="${SERVICE_NAME}-${env_name}-backend-bucket"
@@ -23,7 +23,7 @@ function create_backend_bucket_lb() {
 
   gsutil mb -p ${env_project_id} -l ${env_project_buckets_location} -c standard -b on gs://${BUCKET_NAME}
 
-  gsutil web set -m index.html -e index.html gs://${BUCKET_NAME}
+  gsutil web set -m ${MAIN_PAGE} -e ${ERROR_PAGE} gs://${BUCKET_NAME}
 
   gsutil iam ch allUsers:objectViewer gs://${BUCKET_NAME}
 
