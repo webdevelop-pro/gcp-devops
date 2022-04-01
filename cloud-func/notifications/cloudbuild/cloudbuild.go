@@ -38,11 +38,12 @@ type EventRecord struct {
 	FinishTime    time.Time `json:"finishTime"`
 	ProjectId     string    `json:"projectId"`
 	Substitutions struct {
-		RepoName          string `json:"REPO_NAME"`
-		CommitSha         string `json:"COMMIT_SHA"`
-		ShortSha          string `json:"SHORT_SHA"`
-		BranchName        string `json:"BRANCH_NAME"`
-		NotificationGroup string `json:"_NOTIFICATION_GROUP"`
+		RepoName                    string `json:"REPO_NAME"`
+		CommitSha                   string `json:"COMMIT_SHA"`
+		ShortSha                    string `json:"SHORT_SHA"`
+		BranchName                  string `json:"BRANCH_NAME"`
+		NotificationGroup           string `json:"_NOTIFICATION_GROUP"`
+		NotificationMessageTemplate string `json:"_NOTIFICATION_MESSAGE_TEMPLATE"`
 	} `json:"substitutions"`
 }
 
@@ -157,6 +158,10 @@ func (w Worker) CreateMessage(e interface{}) (string, error) {
 		"\n" +
 		"Duration: {{ .Duration }}\n\n" +
 		"{{ .Commit.Message }}"
+
+	if event.Substitutions.NotificationMessageTemplate != "" {
+		msgTemplate = event.Substitutions.NotificationMessageTemplate
+	}
 
 	return RenderTemplate(
 		msgTemplate,
