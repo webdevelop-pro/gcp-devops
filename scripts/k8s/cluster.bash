@@ -11,8 +11,10 @@ function create_k8s_cluster()
         --disk-type "${env_k8s_nodes_disk_type}" \
         --disk-size "${env_k8s_nodes_disk_size}" \
         --num-nodes ${env_k8s_nodes_count} \
-        --network "default" \
-        --subnetwork "default" \
+        --enable-ip-alias \
+        --create-subnetwork name=${env_k8s_network_name},range=${env_k8s_network_ip_range} \
+        --cluster-ipv4-cidr ${env_k8s_network_pod_ip_range} \
+        --services-ipv4-cidr ${env_k8s_network_services_ip_range} \
         --addons HorizontalPodAutoscaling,HttpLoadBalancing \
         --no-enable-autoupgrade \
         --enable-autorepair
