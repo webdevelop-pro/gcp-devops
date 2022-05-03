@@ -2,6 +2,9 @@
 
 function create_k8s_cluster()
 {
+    gcloud compute networks create ${env_k8s_network_name} \
+        --subnet-mode custom
+
     gcloud container --project ${env_project_id} clusters create ${env_k8s_cluster_name} \
         --region ${env_k8s_nodes_region} \
         --cluster-version "${env_k8s_version}" \
@@ -12,7 +15,8 @@ function create_k8s_cluster()
         --disk-size "${env_k8s_nodes_disk_size}" \
         --num-nodes ${env_k8s_nodes_count} \
         --enable-ip-alias \
-        --create-subnetwork name=${env_k8s_network_name},range=${env_k8s_network_ip_range} \
+        --network ${env_k8s_network_name} \
+        --create-subnetwork name=${env_k8s_network_subnet},range=${env_k8s_network_ip_range} \
         --cluster-ipv4-cidr ${env_k8s_network_pod_ip_range} \
         --services-ipv4-cidr ${env_k8s_network_services_ip_range} \
         --addons HorizontalPodAutoscaling,HttpLoadBalancing \
