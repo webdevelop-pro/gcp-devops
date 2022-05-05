@@ -11,6 +11,7 @@ function create_database()
   DATABASE_MEM="3840MiB"
   DB_NODE_TYPE=$(printenv env_db_instances_${DATABASE_INSTANCE}_node_type)
   DB_NODE_AVAILABILITY=$(printenv env_db_instances_${DATABASE_INSTANCE}_availability)
+  DB_FLAGS=$(printenv env_db_instances_${DATABASE_INSTANCE}_flags)
 
   if [ -z ${DB_NODE_AVAILABILITY} ]; then
     DB_NODE_AVAILABILITY="zonal"
@@ -27,12 +28,23 @@ function create_database()
     --project ${env_project_id} \
     --instance ${DATABASE_INSTANCE_NAME}
 
-  gcloud sql instances patch ${DATABASE_INSTANCE_NAME} \
-    --project ${env_project_id} \
-    --tier ${DB_NODE_TYPE} \
-    --backup-start-time="00:00" \
-    --availability-type ${DB_NODE_AVAILABILITY} \
-    --backup-start-time=00:00
+  if [ -z ${DB_FLAGS} ]; then
+    gcloud sql instances patch ${DATABASE_INSTANCE_NAME} \
+      --project ${env_project_id} \
+      --tier ${DB_NODE_TYPE} \
+      --backup-start-time="00:00" \
+      --availability-type ${DB_NODE_AVAILABILITY} \
+      --backup-start-time=00:00
+  else
+    gcloud sql instances patch ${DATABASE_INSTANCE_NAME} \
+      --project ${env_project_id} \
+      --tier ${DB_NODE_TYPE} \
+      --backup-start-time="00:00" \
+      --availability-type ${DB_NODE_AVAILABILITY} \
+      --backup-start-time=00:00 \
+      --database-flags="${DB_FLAGS}"
+  fi 
+    
 }
 
 function create_user()
