@@ -26,12 +26,17 @@ EOF
 function create_logs_router()
 {
   PROJECT_NUMBER=$(gcloud projects describe ${env_project_id} --format json | jq '.projectNumber' | tr -d '"')
+  LOGS_FILTER=$1
+
+  if [[ ${LOGS_FILTER} == "" ]]; then
+    LOGS_FILTER='labels."k8s-pod/logsNotifications" = "true" severity=(ERROR OR CRITICAL OR ALERT OR EMERGENCY) resource.labels.container_name!="cloudsql-proxy" resource.labels.container_name !~ ".*-doc" resource.labels.container_name !~ ".*-redoc"'
+  fi
 
   gcloud pubsub topics create --project ${env_project_id} ${TOPIC}
 
   gcloud  --project ${env_project_id} logging sinks create log-errors \
      "pubsub.googleapis.com/projects/${env_project_id}/topics/${TOPIC}" \
-     --log-filter='labels."k8s-pod/logsNotifications" = "true" severity=(ERROR OR CRITICAL OR ALERT OR EMERGENCY) resource.labels.container_name!="cloudsql-proxy" resource.labels.container_name !~ ".*-doc" resource.labels.container_name !~ ".*-redoc"'
+     --log-filter="${LOGS_FILTER}"
 
   WRITER_IDENTITY=$(gcloud  --project ${env_project_id} logging sinks describe log-errors --format json | jq '.writerIdentity' | tr -d '"')
 
