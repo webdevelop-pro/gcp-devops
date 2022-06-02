@@ -3,7 +3,7 @@
 BASE_PATH=$(dirname "$0")/../core
 
 ENV_CONFIG="/tmp/env_config.yaml"
-DEPLOY_CONFIG="/tmp/deploy_config.yaml"
+DEPLOY_CONFIG="./deploy_config.yaml"
 TMP_CONFIG="/tmp/config.yaml"
 PREV_ENV_CONFIG="/tmp/env_prev_config.yaml"
 
