@@ -4,7 +4,7 @@ BASE_PATH=$(dirname "$0")/../core
 
 ENV_CONFIG="/tmp/env_config.yaml"
 DEPLOY_CONFIG="./deploy_config.yaml"
-TMP_CONFIG="/tmp/config.yaml"
+TMP_CONFIG="./config.yaml"
 PREV_ENV_CONFIG="/tmp/env_prev_config.yaml"
 
 rm -f ${ENV_CONFIG} ${DEPLOY_CONFIG} ${TMP_CONFIG} ${PREV_ENV_CONFIG}
