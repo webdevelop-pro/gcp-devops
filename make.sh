@@ -18,6 +18,10 @@ RENDERED_GLOBAL_DIR="${RENDERED_TEMPLATES_DIR}/global"
 
 GLOBAL_CONFIGS=${BASE_PATH}/../configs/global
 
+if [ -d ${BASE_PATH}/../configs/secrets/${env_secrets} ]; then
+    ENV_SECRETS=${BASE_PATH}/../configs/secrets/${env_secrets}
+fi
+
 function render_template()
 {
     SERVICE_NAME=$1
@@ -31,7 +35,7 @@ function render_templates()
 
     cp /tmp/new_deploy.yaml ${DEPLOY_CONFIG}
 
-    for FILENAME in $(find ${GLOBAL_CONFIGS} -type f)
+    for FILENAME in $(find ${GLOBAL_CONFIGS} ${ENV_SECRETS} -type f)
     do
         export filename=$(basename ${FILENAME})
 
@@ -56,7 +60,7 @@ function render_templates()
 
     rm -rf ${RENDERED_TEMPLATES_DIR}
 
-    for FILENAME in $(find ${GLOBAL_CONFIGS} -type f)
+    for FILENAME in $(find ${GLOBAL_CONFIGS} ${ENV_SECRETS} -type f)
     do
         FILE_NAME=$(basename ${FILENAME})
         export filename=${FILE_NAME}
