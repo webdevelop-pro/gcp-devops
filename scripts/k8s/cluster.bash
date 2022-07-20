@@ -1,10 +1,20 @@
 #!/usr/bin/env bash
 
+function get_credentials() 
+{
+    gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
+}
+
+
+function create_ns_if_doesnt_exists()
+{
+    #https://stackoverflow.com/questions/63135361/how-to-create-kubernetes-namespace-if-it-does-not-exist
+    local namespace=$1
+    kubectl create namespace $namespace --dry-run -o yaml | kubectl apply -f -
+}
+
 function create_k8s_cluster()
 {
-    gcloud compute networks create ${env_k8s_network_name} \
-        --subnet-mode custom
-
     gcloud container --project ${env_project_id} clusters create ${env_k8s_cluster_name} \
         --region ${env_k8s_nodes_region} \
         --cluster-version "${env_k8s_version}" \
@@ -14,11 +24,8 @@ function create_k8s_cluster()
         --disk-type "${env_k8s_nodes_disk_type}" \
         --disk-size "${env_k8s_nodes_disk_size}" \
         --num-nodes ${env_k8s_nodes_count} \
-        --enable-ip-alias \
-        --network ${env_k8s_network_name} \
-        --create-subnetwork name=${env_k8s_network_subnet},range=${env_k8s_network_ip_range} \
-        --cluster-ipv4-cidr ${env_k8s_network_pod_ip_range} \
-        --services-ipv4-cidr ${env_k8s_network_services_ip_range} \
+        --network "default" \
+        --subnetwork "default" \
         --addons HorizontalPodAutoscaling,HttpLoadBalancing \
         --no-enable-autoupgrade \
         --enable-autorepair
@@ -26,9 +33,8 @@ function create_k8s_cluster()
 
 function create_namespaces()
 {
-    gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
-
-    kubectl create ns ${env_k8s_apps_namespace}
+    get_credentials
+    create_ns_if_doesnt_exists ${env_k8s_apps_namespace}
 }
 
 function setup_cloudbuild()
@@ -58,8 +64,7 @@ function setup_cloudbuild()
 
 function setup_cloudsql_proxy()
 {
-    gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
-
+    get_credentials
     gcloud iam service-accounts create sqlproxy \
         --project ${env_project_id} \
         --display-name "SQL proxy"
@@ -77,7 +82,7 @@ function setup_cloudsql_proxy()
 
 function deploy_k8s_ingress_nginx()
 {
-    gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
+    get_credentials
 
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.26.1/deploy/static/mandatory.yaml
 
@@ -86,9 +91,9 @@ function deploy_k8s_ingress_nginx()
 
 function deploy_k8s_cert_manager()
 {
-    gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
+    get_credentials
 
-    kubectl create namespace cert-manager
+    create_ns_if_doesnt_exists cert-manager
 
     kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.12.0/cert-manager.yaml
 
@@ -110,4 +115,10 @@ function deploy_k8s_cert_manager()
 
     kubectl create secret --namespace cert-manager generic cloud-dns-key \
         --from-file=key.json=$KEY_DIRECTORY/cloud-dns-key.json
+}
+
+function deploy_k8s_manifests()
+{
+    get_credentials
+    ls configs/env/${env_name}/manifests/ | xargs kubectl apply -f
 }
