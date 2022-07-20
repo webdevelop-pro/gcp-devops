@@ -120,5 +120,7 @@ function deploy_k8s_cert_manager()
 function deploy_k8s_manifests()
 {
     get_credentials
-    ls configs/env/${env_name}/manifests/ | xargs kubectl apply -f
+    create_ns_if_doesnt_exists manifests
+    cd configs/env/${env_name}/manifests/
+    ls | xargs kubectl apply -n manifests -f 
 }
