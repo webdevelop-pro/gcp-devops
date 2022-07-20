@@ -121,6 +121,6 @@ function deploy_k8s_manifests()
 {
     get_credentials
     create_ns_if_doesnt_exists manifests
-    cd configs/env/${env_name}/manifests/
+    cd manifests/${env_name}
     ls | xargs kubectl apply -n manifests -f 
 }
