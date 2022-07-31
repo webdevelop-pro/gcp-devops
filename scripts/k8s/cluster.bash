@@ -2,9 +2,25 @@
 
 function get_credentials() 
 {
-    gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
-}
+    if [ ! -z ${env_k8s_kubeconfig_cluster_certificate_authority_data} ]; then
+        K8S_CLUSTER="${env_k8s_cluster_name}"
+        K8S_USER="${env_k8s_cluster_name}-admin"
+        K8S_CONTEXT="${env_k8s_cluster_name}-ctx"
 
+        kubectl config set "clusters.${K8S_CLUSTER}.certificate-authority-data" ${env_k8s_kubeconfig_cluster_certificate_authority_data}
+        kubectl config set "clusters.${K8S_CLUSTER}.server" ${env_k8s_kubeconfig_cluster_server}
+
+        kubectl config set "users.${K8S_USER}.client-certificate-data" ${env_k8s_kubeconfig_user_client_certificate_data}
+        kubectl config set "users.${K8S_USER}.client-key-data" ${env_k8s_kubeconfig_user_client_key_data}
+
+        kubectl config set "contexts.${K8S_CONTEXT}.cluster" "${K8S_CLUSTER}"
+        kubectl config set "contexts.${K8S_CONTEXT}.user" "$K8S_USER"
+
+        kubectl config set "current-context" "${K8S_CONTEXT}"
+    else
+        gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
+    fi
+}
 
 function create_ns_if_doesnt_exists()
 {
