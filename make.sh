@@ -6,6 +6,8 @@ set -e
 
 source ${BASE_PATH}/etc/parse_yaml.sh
 
+source ${BASE_PATH}/scripts/k8s/cluster.bash
+
 DEPLOY_CONFIG="./deploy_config.yaml"
 APP_CONFIG="/tmp/apps_config.yaml"
 TMP_CONFIG="/tmp/tmp_config.yaml"
@@ -88,6 +90,9 @@ function render_templates()
 
         # Render certificate for app
         render_template ${OUTPUT_DIR} certificate.yaml
+
+        # Render namespace for app
+        render_template ${OUTPUT_DIR} namespace.yaml
     done
 
     mkdir -p ${RENDERED_GLOBAL_DIR}
@@ -101,6 +106,8 @@ function render_templates()
 function deploy()
 {
     render_templates
+
+    deploy_namespace
 
     deploy_configs
 
@@ -215,6 +222,20 @@ function deploy_certificate()
     done
 }
 
+function deploy_namespace()
+{
+    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
+    do
+        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/namespace.yaml"
+
+        echo "Apply ${K8S_MANIFEST}"
+
+        if [ -f ${K8S_MANIFEST} ]; then
+            cat ${K8S_MANIFEST} | kubectl apply -f -
+        fi
+    done
+}
+
 function deploy_global()
 {
     for FILENAME in $(ls ${RENDERED_GLOBAL_DIR})
@@ -246,8 +267,6 @@ EOF
      --env-vars-file=/tmp/cloudbuild.env
 }
 
-gcloud container --project ${env_project_id} clusters get-credentials ${env_k8s_cluster_name} --region ${env_k8s_nodes_region}
-
-kubectl create namespace ${env_k8s_apps_namespace} || kubectl get namespace ${env_k8s_apps_namespace}
+get_credentials
 
 $@

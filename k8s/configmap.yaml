@@ -32,5 +32,5 @@ data:
 kind: ConfigMap
 metadata:
   name: "{{ service_name }}"
-  namespace: "{{ env.k8s.apps.namespace }}"
+  namespace: "{{ app.get('namespace', env.k8s.apps.namespace) }}"
 {%- endif %}

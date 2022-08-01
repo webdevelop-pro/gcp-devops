@@ -42,7 +42,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: "{{ service_name }}"
-  namespace: "{{ env.k8s.apps.namespace }}"
+  namespace: "{{ app.get('namespace', env.k8s.apps.namespace) }}"
   labels:
     app: "{{ service_name }}"
 spec:

@@ -10,9 +10,15 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-issuer
     solvers:
+    {%- if env.project.id is defined %}
     - dns01:
         clouddns:
           project: "{{ env.project.id }}"
           serviceAccountSecretRef:
             name: cloud-dns-key
             key: key.json
+    {% else %}
+    - http01:
+        ingress:
+          class: nginx
+    {%- endif %}
