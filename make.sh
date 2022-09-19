@@ -107,8 +107,6 @@ function deploy()
     deploy_ingress
 
     deploy_certificate
-
-    deploy_global
 }
 
 function deploy_configs()
