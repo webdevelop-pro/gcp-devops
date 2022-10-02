@@ -73,9 +73,11 @@ function deploy_k8s_ingress_nginx()
 {
     gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
 
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.26.1/deploy/static/mandatory.yaml
+    kubectl create clusterrolebinding cluster-admin-binding \
+        --clusterrole cluster-admin \
+        --user $(gcloud config get-value account)
 
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.26.1/deploy/static/provider/cloud-generic.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.1/deploy/static/provider/cloud/deploy.yaml
 }
 
 function deploy_k8s_cert_manager()
