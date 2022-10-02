@@ -18,6 +18,15 @@ function create_k8s_cluster()
         --enable-autorepair
 }
 
+function update_k8s_cluster()
+{
+    gcloud container clusters upgrade ${env_k8s_cluster_name} \
+        --project ${env_project_id} \
+        --region ${env_k8s_nodes_region} \
+        --image-type="COS_CONTAINERD" \
+        --node-pool="default-pool"
+}
+
 function create_namespaces()
 {
     gcloud container clusters get-credentials ${env_k8s_cluster_name} --zone ${env_k8s_nodes_region} --project ${env_project_id}
