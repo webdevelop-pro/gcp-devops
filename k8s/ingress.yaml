@@ -30,8 +30,10 @@ spec:
       paths:
       {%- for path in route.paths %}
         - backend:
-            serviceName: "{{ path.get('to_service', service_name) }}-service"
-            servicePort: {{ path.port }}
+            service:
+              name: "{{ path.get('to_service', service_name) }}-service"
+              port:
+                number: {{ path.port }}
           {%- if 'path' in path %}
           path: "{{ path.path }}"
           {%- endif %}
@@ -39,12 +41,16 @@ spec:
       {%- if env.apps[service_name].get('docs', false) %}
         - path: /docs
           backend:
-            serviceName: "{{ service_name }}-service"
-            servicePort: 8086
+            service:
+              name: "{{ service_name }}-service"
+              port:
+                number: 8086
         - path: /swagger.json
           backend:
-            serviceName: "{{ service_name }}-service"
-            servicePort: 8086
+            service:
+              name: "{{ service_name }}-service"
+              port:
+                number: 8086
       {%- endif %}
   {%- endfor %}
   tls:
