@@ -34,9 +34,9 @@ spec:
               name: "{{ path.get('to_service', service_name) }}-service"
               port:
                 number: {{ path.port }}
+          pathType: ImplementationSpecific
           {%- if 'path' in path %}
           path: "{{ path.path }}"
-          pathType: ImplementationSpecific
           {%- endif %}
       {%- endfor %}
       {%- if env.apps[service_name].get('docs', false) %}
