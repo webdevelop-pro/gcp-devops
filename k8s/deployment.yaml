@@ -143,6 +143,8 @@ spec:
           image: "{{ env.project.registry }}/{{ env.project.id }}/{{ service_name }}:latest-{{ env.name }}"
           {%- endif %}
 
+          imagePullPolicy: Always
+
           {%- if app.mount is defined %}
           volumeMounts:
           {%- for name, value in app.get('mount', {}).items() %}
