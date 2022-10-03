@@ -11,7 +11,7 @@
 {%- set ingress = env.apps[service_name].ingress %}
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ service_name }}-ingress"
@@ -21,7 +21,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: '{{ ingress.get('ssl', {}).get('redirect_to_https', false) }}'
     {%- if ingress.rewrite_target is defined %}
     nginx.ingress.kubernetes.io/rewrite-target: "{{ ingress.rewrite_target }}"
-    {%- endif %}
+    {%- endif %} 
 spec:
   rules:
   {%- for domain, route in ingress.routes.items() %}
