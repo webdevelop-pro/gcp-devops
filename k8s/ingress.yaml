@@ -36,16 +36,19 @@ spec:
                 number: {{ path.port }}
           {%- if 'path' in path %}
           path: "{{ path.path }}"
+          pathType: ImplementationSpecific
           {%- endif %}
       {%- endfor %}
       {%- if env.apps[service_name].get('docs', false) %}
         - path: /docs
+          pathType: ImplementationSpecific
           backend:
             service:
               name: "{{ service_name }}-service"
               port:
                 number: 8086
         - path: /swagger.json
+          pathType: ImplementationSpecific
           backend:
             service:
               name: "{{ service_name }}-service"
