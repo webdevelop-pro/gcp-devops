@@ -18,7 +18,7 @@ RENDERED_TEMPLATES_DIR="rendered_templates"
 RENDERED_APPS_DIR="${RENDERED_TEMPLATES_DIR}/apps"
 RENDERED_GLOBAL_DIR="${RENDERED_TEMPLATES_DIR}/global"
 
-GLOBAL_CONFIGS=${BASE_PATH}/../configs/global
+GLOBAL_CONFIGS=${BASE_PATH}/../configs/global/${env_project_name}
 
 if [ -d ${BASE_PATH}/../configs/secrets/${env_secrets} ]; then
     ENV_SECRETS=${BASE_PATH}/../configs/secrets/${env_secrets}
