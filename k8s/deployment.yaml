@@ -137,7 +137,11 @@ spec:
         {%- endif %}
 
         - name: "{{ service_name }}"
+          {%- if app.get('imagePullPolicy', '') != '' %}
+          imagePullPolicy: "{{ app.imagePullPolicy }}"
+          {%- else %}
           imagePullPolicy: Always
+          {%- endif %}
           {%- if app.command is defined %}
           command: {{ app.command }}
           {%- endif %}
