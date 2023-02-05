@@ -330,6 +330,13 @@ function help()
     Args:
         app_name - App name, example: \"cms-api\", default: \"all\"
         template_name - Template name, example: \"configmap\", default: \"all\"
+
+    Examples:
+        Render only configmap for cms-api
+            ./scripts/k8s/deploy_apps.bash render_templates cms-api configmap
+
+        Render only global services
+            ./scripts/k8s/deploy_apps.bash render_templates global
     "
 }
 
