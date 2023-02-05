@@ -323,10 +323,13 @@ function help()
         ./deploy_apps.bash <command> [arguments]
 
     Commands:
-        render_templates        Render templates for k8s manifests per service
-        apply                   Apply rendered templates to k8s
-        deploy                  Render + Apply
-        help                    Show help
+        render_templates [app_name] [template_name]        Render templates for k8s manifests per service
+        apply [app_name] [template_name]                   Apply rendered templates to k8s
+        deploy [app_name] [template_name]                  Render + Apply
+    
+    Args:
+        app_name - App name, example: \"cms-api\", default: \"all\"
+        template_name - Template name, example: \"configmap\", default: \"all\"
     "
 }
 
