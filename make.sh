@@ -40,6 +40,21 @@ function _render_template()
     fi
 }
 
+function _get_services_manifests_dir()
+{
+    SERVICE_NAME=$1
+
+    if [[ ${SERVICE_NAME} = "" ]]; then
+        SERVICE_NAME="all"
+    fi
+
+    if [[ $( echo ${SERVICE_NAME} | tr '[:upper:]' '[:lower:]' ) = 'all' ]]; then
+        SERVICE_NAME='*'
+    fi
+
+    find ${RENDERED_APPS_DIR} -type d -name "${SERVICE_NAME}.yaml"
+}
+
 function _get_service_config()
 {
     SERVICE_NAME=$1
@@ -103,8 +118,6 @@ function _render_app_templates()
             | yq e -P - > ${DEPLOY_CONFIG}
     done
 
-    rm -rf ${RENDERED_TEMPLATES_DIR}
-
     for FILENAME in $(_get_service_config ${SERVICE_NAME})
     do
         FILE_NAME=$(basename ${FILENAME})
@@ -118,13 +131,6 @@ function _render_app_templates()
             _render_template ${OUTPUT_DIR} ${TEMPLATE_FILE}
         done
     done
-
-    # mkdir -p ${RENDERED_GLOBAL_DIR}
-
-    # render_template global letsencrypt-issuer.yaml
-
-    # Delete empty files
-    find ${RENDERED_TEMPLATES_DIR} -size 0 -delete
 }
 
 function _render_global_templates() {
@@ -143,6 +149,8 @@ function render_templates()
     SERVICE_NAME=$1
     TEMPLATE_NAME=$2
 
+    rm -rf ${RENDERED_TEMPLATES_DIR}
+
     if [[ ${SERVICE_NAME} = "global" ]]; then
         _render_global_templates $TEMPLATE_NAME
     else
@@ -151,170 +159,63 @@ function render_templates()
 
     # Delete empty files
     find ${RENDERED_TEMPLATES_DIR} -size  0 -print -delete
+
+    echo "Render finish successfully"
+}
+
+function _apply_apps()
+{
+    SERVICE_NAME=$1
+    TEMPLATE_NAME=$2
+    
+    for SERVICE_DIR in $(_get_services_manifests_dir $SERVICE_NAME)
+    do
+        echo $SERVICE_DIR
+        for TEMPLATE_FILE in $(_get_template_file apps ${TEMPLATE_NAME})
+        do
+            K8S_MANIFEST="${SERVICE_DIR}/$(basename ${TEMPLATE_FILE})"
+
+            echo "Apply ${K8S_MANIFEST}"
+
+            if [ -f ${K8S_MANIFEST} ]; then
+                cat ${K8S_MANIFEST} | kubectl apply -f -
+            fi
+        done
+    done
+}
+
+function _apply_global()
+{
+    TEMPLATE_NAME=$1
+
+    for TEMPLATE_FILE in $(_get_template_file global ${TEMPLATE_NAME})
+    do
+        K8S_MANIFEST="${RENDERED_GLOBAL_DIR}/$(basename ${TEMPLATE_FILE})"
+
+        echo "Apply ${K8S_MANIFEST}"
+
+        if [ -f ${K8S_MANIFEST} ]; then
+            cat ${K8S_MANIFEST} | kubectl apply -f -
+        fi
+    done
+}
+
+function apply()
+{
+    SERVICE_NAME=$1
+    TEMPLATE_NAME=$2
+
+    if [[ ${SERVICE_NAME} = "global" ]]; then
+        _apply_global $TEMPLATE_NAME
+    else
+        _apply_apps $SERVICE_NAME $TEMPLATE_NAME
+    fi
 }
 
 function deploy()
 {
-    render_templates
-
-    deploy_namespace
-
-    deploy_configs
-
-    deploy_secret
-
-    deploy_deployment
-
-    deploy_cronjob
-
-    deploy_service
-
-    deploy_ingress
-
-    deploy_certificate
-}
-
-function deploy_configs()
-{
-    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
-    do
-        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/configmap.yaml"
-
-        echo "Apply ${K8S_MANIFEST}"
-
-        if [ -f ${K8S_MANIFEST} ]; then
-            cat ${K8S_MANIFEST} | kubectl apply -f -
-        fi
-    done
-}
-
-function deploy_secret()
-{
-    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
-    do
-        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/secret.yaml"
-
-        echo "Apply ${K8S_MANIFEST}"
-
-        if [ -f ${K8S_MANIFEST} ]; then
-            cat ${K8S_MANIFEST} | kubectl apply -f -
-        fi
-    done
-}
-
-function deploy_deployment()
-{
-    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
-    do
-        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/deployment.yaml"
-
-        echo "Apply ${K8S_MANIFEST}"
-
-        if [ -f ${K8S_MANIFEST} ]; then
-            cat ${K8S_MANIFEST} | kubectl apply -f -
-        fi
-    done
-}
-
-function deploy_cronjob()
-{
-    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
-    do
-        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/cronjob.yaml"
-
-        echo "Apply ${K8S_MANIFEST}"
-
-        if [ -f ${K8S_MANIFEST} ]; then
-            cat ${K8S_MANIFEST} | kubectl apply -f -
-        fi
-    done
-}
-
-function deploy_service()
-{
-    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
-    do
-        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/service.yaml"
-
-        echo "Apply ${K8S_MANIFEST}"
-
-        if [ -f ${K8S_MANIFEST} ]; then
-            cat ${K8S_MANIFEST} | kubectl apply -f -
-        fi
-    done
-}
-
-function deploy_ingress()
-{
-    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
-    do
-        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/ingress.yaml"
-
-        echo "Apply ${K8S_MANIFEST}"
-
-        if [ -f ${K8S_MANIFEST} ]; then
-            cat ${K8S_MANIFEST} | kubectl apply -f -
-        fi
-    done
-}
-
-function deploy_certificate()
-{
-    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
-    do
-        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/certificate.yaml"
-
-        echo "Apply ${K8S_MANIFEST}"
-
-        if [ -f ${K8S_MANIFEST} ]; then
-            cat ${K8S_MANIFEST} | kubectl apply -f -
-        fi
-    done
-}
-
-function deploy_namespace()
-{
-    for SERVICE_DIR in $(ls ${RENDERED_APPS_DIR})
-    do
-        K8S_MANIFEST="${RENDERED_APPS_DIR}/${SERVICE_DIR}/namespace.yaml"
-
-        echo "Apply ${K8S_MANIFEST}"
-
-        if [ -f ${K8S_MANIFEST} ]; then
-            cat ${K8S_MANIFEST} | kubectl apply -f -
-        fi
-    done
-}
-
-function deploy_global()
-{
-    for FILENAME in $(ls ${RENDERED_GLOBAL_DIR})
-    do
-        K8S_MANIFEST="${RENDERED_GLOBAL_DIR}/${FILENAME}"
-
-        echo "Apply ${K8S_MANIFEST}"
-
-        cat ${K8S_MANIFEST} | kubectl apply -f -
-    done
-}
-
-function deploy_cloudbuild()
-{
-
-cat > /tmp/cloudbuild.env << EOF
-SLACK_TOKEN: ${env_slack_bot_token}
-GIT_REPO_OWNER: ${env_github_repo_owner}
-GITHUB_ACCESS_TOKEN: ${env_github_access_token}
-CHANNELS: '${env_build_notifications}'
-EOF
-
-    gcloud --project ${env_project_id} functions deploy build-notifications \
-     --runtime go116 \
-     --trigger-topic cloud-builds \
-     --allow-unauthenticated \
-     --entry-point=CloudBuildSubscribe \
-     --source=${BASE_PATH}/cloud-func/notifications \
-     --env-vars-file=/tmp/cloudbuild.env
+    render_templates $1 $2
+    apply $1 $2
 }
 
 function help()
