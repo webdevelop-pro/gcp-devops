@@ -78,6 +78,12 @@ spec:
             secretName: "{{ value.secret.name }}"
           {%- endif %}
 
+          {%- if value.hostPath is defined %}
+          hostPath:
+            type: Directory
+            path: "{{ value.hostPath }}"
+          {%- endif %}
+
           {%- if value.configmap is defined %}
           configMap:
             name: "{{ value.configmap.name | default(service_name) }}"
