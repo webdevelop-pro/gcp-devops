@@ -85,6 +85,12 @@ spec:
 
           restartPolicy: Never
           shareProcessNamespace: true
+          
+          {%- if env.k8s.pull is defined %}
+          imagePullSecrets:
+            - name: "{{ env.k8s.pull.secret }}"
+          {%- endif %}
+          
           containers:
 
             {%- if app.get('db_proxy', {}).get('enable', false) %}
