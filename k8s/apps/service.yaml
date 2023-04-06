@@ -39,4 +39,27 @@ spec:
     app: "{{ service_name }}"
 {%- endif %}
 
+{%- if 'nodeports' in app %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ service_name }}-service-node"
+  namespace: "{{ app.get('namespace', env.k8s.apps.namespace) }}"
+  labels:
+    app: "{{ service_name }}"
+spec:
+  ports:
+  {%- for name, port in app.get('nodeports', {}).items() %}
+    - port: {{ port.port }}
+      targetPort: {{ port.port }}
+      nodePort: {{ port.nodeport }}
+      name: "{{ name }}"
+  {%- endfor %}
+
+  type: NodePort
+  selector:
+    app: "{{ service_name }}"
+{%- endif %}
+
 {% endif %}
