@@ -11,7 +11,7 @@
 {%- set ingress = env.apps[service_name].ingress %}
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ service_name }}-ingress"
@@ -31,21 +31,33 @@ spec:
       paths:
       {%- for path in route.paths %}
         - backend:
-            serviceName: "{{ path.get('to_service', service_name) }}-service"
-            servicePort: {{ path.port }}
+            service:
+              name: "{{ path.get('to_service', service_name) }}-service"
+              port:
+                number: {{ path.port }}
+          path: /
+          pathType: Prefix
           {%- if 'path' in path %}
           path: "{{ path.path }}"
+          {%- else %}
+          path: /
           {%- endif %}
       {%- endfor %}
       {%- if env.apps[service_name].get('docs', false) %}
-        - path: /docs
-          backend:
-            serviceName: "{{ service_name }}-service"
-            servicePort: 8086
-        - path: /swagger.json
-          backend:
-            serviceName: "{{ service_name }}-service"
-            servicePort: 8086
+        - backend:
+            service:
+              name: "{{ service_name }}-service"
+              port:
+                number: 8086
+          path: /docs
+          pathType: Prefix
+        - backend:
+            service:
+              name: "{{ service_name }}-service"
+              port:
+                number: 8086
+          path: /swagger.json
+          pathType: Prefix
       {%- endif %}
   {%- endfor %}
   tls:

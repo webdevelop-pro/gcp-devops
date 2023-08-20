@@ -84,6 +84,11 @@ spec:
             path: "{{ value.hostPath }}"
           {%- endif %}
 
+          {%- if value.persistentVolumeClaim is defined %}
+          persistentVolumeClaim:
+            claimName: "{{ value.persistentVolumeClaim }}"
+          {%- endif %}
+
           {%- if value.configmap is defined %}
           configMap:
             name: "{{ value.configmap.name | default(service_name) }}"
@@ -126,7 +131,7 @@ spec:
           {%- if app.get('image', '') != '' %}
           image: "{{ app.image }}"
           {%- else %}
-          image: "{{ env.project.registry }}/{{ env.project.id }}/{{ service_name }}:latest-{{ env.name }}"
+          image: "{{ env.project.registry }}/{{ env.project.id }}/{{ service_name }}:doc"
           {%- endif %}
           ports:
           - containerPort: 8086
@@ -135,7 +140,7 @@ spec:
           {%- if app.get('image', '') != '' %}
           image: "{{ app.image }}"
           {%- else %}
-          image: "{{ env.project.registry }}/{{ env.project.id }}/{{ service_name }}:latest-{{ env.name }}"
+          image: "{{ env.project.registry }}/{{ env.project.id }}/{{ service_name }}:doc"
           {%- endif %}
           ports:
           - containerPort: 8087
@@ -224,4 +229,23 @@ spec:
           {%- endif %}
 
 {% endif %}
+
+{%- for name, value in app.get('mount', {}).items() %}
+{%- if value.persistentVolumeClaim is defined %}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{ value.persistentVolumeClaim }}"
+  namespace: "{{ app.get('namespace', env.k8s.apps.namespace) }}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: "{{ env.storage.class }}"
+  resources:
+    requests:
+      storage: 2Gi
+{%- endif %}
+{%- endfor %}
+
 {% endif %}
