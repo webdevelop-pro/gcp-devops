@@ -67,7 +67,7 @@ function _get_service_config()
         SERVICE_NAME='*'
     fi
 
-    find ${GLOBAL_CONFIGS} ${ENV_SECRETS} -type f -name "${SERVICE_NAME}.yaml"
+    find ${GLOBAL_CONFIGS} ${ENV_SECRETS} -type f -name "${SERVICE_NAME}.yaml" | sort
 }
 
 function _get_template_file()
@@ -83,7 +83,7 @@ function _get_template_file()
         TEMPLATE_NAME='*'
     fi
 
-    find ${TEMPLATES_DIR}/${GROUP} -type f -name "${TEMPLATE_NAME}.yaml"
+    find ${TEMPLATES_DIR}/${GROUP} -type f -name "${TEMPLATE_NAME}.yaml" | sort
 }
 
 function _render_app_templates()

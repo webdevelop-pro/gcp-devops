@@ -1,0 +1,23 @@
+{%- set service_name = os.filename.split('.')[0] %}
+
+{%- if not service_name in env.apps %}
+  {{ 0/0 }} # Please add this deployment to apps list
+{%- endif %}
+
+{%- set app = env.apps[service_name] %}
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "{{ app.get('namespace', env.k8s.apps.namespace) }}"
+
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: ewoJImF1dGhzIjogewoJCSJjci53ZWJkZXZlbG9wLnVzIjogewoJCQkiYXV0aCI6ICJkMlZpWkdWMlgzSmxaMmx6ZEhKNU9qVTBZMkl5TnpJd1pXRmtNekUzWW1VMU9HUmhZMk0zT0RsalpXRmxNV05oIgoJCX0KCX0KfQ==
+kind: Secret
+metadata:
+  name: regcred
+  namespace: "{{ app.get('namespace', env.k8s.apps.namespace) }}"
+type: kubernetes.io/dockerconfigjson
