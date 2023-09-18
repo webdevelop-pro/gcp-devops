@@ -1,3 +1,4 @@
+{% if env.k8s.get('cert_manager', {}).get('enabled', false) %}
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
@@ -22,3 +23,4 @@ spec:
         ingress:
           class: nginx
     {%- endif %}
+{%- endif %}
