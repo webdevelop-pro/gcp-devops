@@ -14,7 +14,7 @@ LABEL REPOSITORY=$REPOSITORY
 ENV GOPATH=/go
 ENV VERSION=${VERSION:-unknown}
 
-RUN apk add --no-cache make gcc musl-dev linux-headers git gettext
+RUN apk add --no-cache make gcc musl-dev linux-headers git gettext ca-certificates
 
 ADD . /app
 
@@ -22,12 +22,5 @@ WORKDIR /app
 
 RUN ./build-deploy.sh build
 
-FROM alpine:3.18.4@sha256:48d9183eb12a05c99bcc0bf44a003607b8e941e1d4f41f9ad12bdcc4b5672f86
-
-RUN apk add --no-cache ca-certificates
-
-WORKDIR /app
-COPY --from=builder /app/app /app/app
 COPY etc ./etc /app/etc/
-
-CMD ["/app/app"]
+CMD ["/bin/sh"]
