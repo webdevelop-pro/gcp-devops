@@ -1,25 +1,20 @@
 COMPANY_NAME=webdevelop-pro
-SERVICE_NAME=go-common
-
-build() {
-  go build -ldflags "-s -w -X main.repository=${REPOSITORY} -X main.revisionID=${GIT_COMMIT} -X main.version=${BUILD_DATE}:${GIT_COMMIT} -X main.service=${SERVICE_NAME}" -o ./app ./*.go && chmod +x ./app
-}
+SERVICE_NAME=python-common
 
 case $1 in
 
 run)
   GIT_COMMIT=$(git rev-parse --short HEAD)
   BUILD_DATE=$(date "+%Y%m%d")
-  build && ./app
+  python -m http.server
   ;;
 
 audit)
   echo "running gosec"
-  gosec ./...
-  ;;
-
-build)
-  build
+  bandit --exclude ./venv -ll -r ./
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
   ;;
 
 *)

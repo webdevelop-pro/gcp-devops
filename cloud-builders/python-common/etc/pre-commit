@@ -1,12 +1,12 @@
 #!/bin/sh
 
-./make.sh swag-doc
-if [ $? = 0 ]; then
-  echo 'swagger updated ✅'
-else
-  echo 'swagger failed ❌'
-  exit 1
-fi
+# ./make.sh swag-doc
+# if [ $? = 0 ]; then
+#  echo 'swagger updated ✅'
+# else
+#  echo 'swagger failed ❌'
+#  exit 1
+# fi
 
 ./make.sh lint
 if [ $? = 0 ]; then
@@ -16,11 +16,11 @@ else
   exit 1
 fi
 
-./make.sh gosec
+./make.sh audit
 if [ $? = 0 ]; then
-  echo 'gosec passed ✅'
+  echo 'bandit passed ✅'
 else
-  echo 'gosec failed ❌'
+  echo 'bandit failed ❌'
   exit 1
 fi
 
@@ -31,4 +31,3 @@ else
   echo 'test failed ❌'
   exit 1
 fi
-
