@@ -35,6 +35,7 @@ self_update() {
   docker run --name=makesh cr.webdevelop.us/webdevelop-pro/go-common:latest-dev sh &&
   docker cp makesh:/app/etc/make.sh make.sh;
   docker cp makesh:/app/etc/golangci.yml .golangci.yml;
+  docker cp makesh:/app/etc/air.toml .air.toml
   docker cp makesh:/app/etc/pre-commit etc/pre-commit;
   docker stop makesh;
 }
