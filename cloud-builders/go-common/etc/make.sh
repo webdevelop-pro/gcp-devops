@@ -32,7 +32,7 @@ self_update() {
   mkdir etc;
   docker pull cr.webdevelop.us/webdevelop-pro/go-common:latest-dev;
   docker rm -f makesh;
-  docker run --name=makesh cr.webdevelop.us/webdevelop-pro/go-common:latest-dev &&
+  docker run --name=makesh cr.webdevelop.us/webdevelop-pro/go-common:latest-dev sh &&
   docker cp makesh:/app/etc/make.sh make.sh;
   docker cp makesh:/app/etc/golangci.yml .golangci.yml;
   docker cp makesh:/app/etc/pre-commit etc/pre-commit;
