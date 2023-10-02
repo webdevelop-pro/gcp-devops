@@ -1,0 +1,43 @@
+#!/bin/sh
+
+./make.sh lint
+if [ $? = 0 ]; then
+  echo 'lint passed ✅'
+else
+  echo 'lint failed ❌'
+  exit 1
+fi
+
+./make.sh gosec
+if [ $? = 0 ]; then
+  echo 'gosec passed ✅'
+else
+  echo 'gosec failed ❌'
+  exit 1
+fi
+
+./make.sh test
+if [ $? = 0 ]; then
+  echo 'test passed ✅'
+else
+  echo 'test failed ❌'
+  exit 1
+fi
+
+#./make.sh swag-doc
+#if [ $? = 0 ]; then
+#  echo 'swag-doc passed ✅'
+#  git add ./api
+#else
+#  echo 'swag-doc failed ❌'
+#  exit 1
+#fi
+
+#./make.sh doc
+#if [ $? = 0 ]; then
+#  echo 'doc passed ✅'
+#  git add "./*README.md*"
+#else
+#  echo 'doc failed ❌'
+#  exit 1
+#fi

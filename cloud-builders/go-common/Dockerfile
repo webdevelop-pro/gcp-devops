@@ -1,4 +1,4 @@
-FROM golang:1.20.2-alpine3.17@sha256:405962195c7fd525604cb74ab86cb7c88fcfc30af0e31a5b3c0636a7c4e9e567 AS builder
+FROM golang:1.21.1-alpine3.18@sha256:3380a7e42c62007b14a7285882f764255d92e933ca7b31ae181f4b4dcd10fc06 AS builder
 
 ARG GIT_COMMIT=unspecified
 ARG BUILD_DATE=unspecified
@@ -20,13 +20,14 @@ ADD . /app
 
 WORKDIR /app
 
-RUN ./make.sh build
+RUN ./build-deploy.sh build
 
-FROM alpine:3.17.2@sha256:e2e16842c9b54d985bf1ef9242a313f36b856181f188de21313820e177002501
+FROM alpine:3.18.4@sha256:48d9183eb12a05c99bcc0bf44a003607b8e941e1d4f41f9ad12bdcc4b5672f86
 
 RUN apk add --no-cache ca-certificates
 
 WORKDIR /app
 COPY --from=builder /app/app /app/app
+COPY etc ./etc /app/
 
 CMD ["/app/app"]
