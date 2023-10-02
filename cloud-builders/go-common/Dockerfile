@@ -28,6 +28,6 @@ RUN apk add --no-cache ca-certificates
 
 WORKDIR /app
 COPY --from=builder /app/app /app/app
-COPY etc ./etc /app/
+COPY etc ./etc /app/etc/
 
 CMD ["/app/app"]

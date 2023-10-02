@@ -31,7 +31,7 @@ build() {
 self_update() {
   mkdir etc;
   docker pull cr.webdevelop.us/webdevelop-pro/go-common:latest;
-  docker run --name=makesh gcr.io/acretrader-dev-v2/default-builder:latest &&
+  docker run --name=makesh cr.webdevelop.us/webdevelop-pro/go-common:latest &&
   docker cp makesh:/app/etc/make.sh make.sh;
   docker cp makesh:/app/etc/golangci.yml .golangci.yml;
   docker cp makesh:/at-devops/etc/pre-commit etc/pre-commit;
