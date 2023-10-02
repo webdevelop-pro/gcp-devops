@@ -1,7 +1,7 @@
 FROM python:3.11.5-alpine3.18@sha256:738ac14925d69ff88103c028573de949286c8d5c81afb202954512aa6207bbc2 as build
 ENV PYTHONUNBUFFERED 1
 
-RUN apk add --no-cache .build-deps \
+RUN apk add --no-cache --virtual .build-deps \
   build-base ca-certificates linux-headers musl-dev \
   libffi-dev python3-dev openssl-dev openssh-client \
   git gcc
