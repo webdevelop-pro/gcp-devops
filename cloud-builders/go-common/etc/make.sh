@@ -15,9 +15,9 @@ lstrip() {
 }
 
 WORK_DIR=$(pwd)
-COMPANY_NAME=
-SERVICE_NAME=
-REPOSITORY=$COMPANY_NAME/$SERVICE_NAME
+COMPANY_NAME=webdevelop-pro
+SERVICE_NAME=$(lstrip $(basename $(pwd)) "i-")
+REPOSITORY=$COMPANY_NAME/i-$SERVICE_NAME
 
 init() {
   GO_FILES=$(find . -name '*.go' | grep -v _test.go)
@@ -48,7 +48,7 @@ install)
   go install github.com/cosmtrek/air@latest
 
   echo "set up pre-commit hook and make.sh file"
-  self_update();
+  self_update;
 
   if [ -d ".git" -a -d ".git/hooks" ]
   then
@@ -87,7 +87,7 @@ race)
 
 self-update)
   docker rm -f makesh;
-  self_update();
+  self_update;
   ;;
 
 run-dev)
