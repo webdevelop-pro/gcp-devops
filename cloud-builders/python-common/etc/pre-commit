@@ -7,6 +7,7 @@
 #  echo 'swagger failed ❌'
 #  exit 1
 # fi
+# git add ./swagger.json
 
 ./make.sh lint
 if [ $? = 0 ]; then
