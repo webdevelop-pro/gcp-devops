@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# ./make.sh swag-doc
+# if [ $? = 0 ]; then
+#  echo 'swagger updated ✅'
+# else
+#  echo 'swagger failed ❌'
+#  exit 1
+# fi
+# git add ./swagger.json
+
+./make.sh lint
+if [ $? = 0 ]; then
+  echo 'lint passed ✅'
+else
+  echo 'lint failed ❌'
+  exit 1
+fi
+
+./make.sh audit
+if [ $? = 0 ]; then
+  echo 'bandit passed ✅'
+else
+  echo 'bandit failed ❌'
+  exit 1
+fi
+
+./make.sh test
+if [ $? = 0 ]; then
+  echo 'test passed ✅'
+else
+  echo 'test failed ❌'
+  exit 1
+fi
