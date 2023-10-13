@@ -34,8 +34,8 @@ case $1 in
 
 install)
   echo "Creating virtual envoiroment into venv folder"
-  virtualenv --python=python3 venv
-  source venv/bin/activate
+  python3 -m venv venv
+  . venv/bin/activate
   echo "Installing requirements"
   pip install -r requirements.txt
   pip install -r requirements-dev.txt
@@ -51,7 +51,7 @@ install)
   ;;
 
 lint)
-  pylint app/ tests/
+  ruff check app/ tests/
   ;;
 
 test)
