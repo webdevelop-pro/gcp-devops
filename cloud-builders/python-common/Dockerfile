@@ -10,10 +10,10 @@ WORKDIR /usr/local/app/aiohttp_boilerplate.git
 
 RUN python -m venv /usr/local/app/venv
 ENV PATH="/usr/local/app/venv/bin:$PATH"
-RUN pip install aiohttp==3.8.5 asyncpg==0.28.0 marshmallow==2.21.0 PyJWT==2.4.0 ujson==5.8.0 uvloop==0.17.0 aiocache==0.11.1 python-json-logger==2.0.7 django_environ==0.10.0
 RUN git clone https://github.com/webdeveloppro/aiohttp_boilerplate.git /usr/local/app/aiohttp_boilerplate.git && \
   cd /usr/local/app/aiohttp_boilerplate.git && \
-  git checkout -q 21f2b3927d583f1889d1deb6353899b6e81170d2 .
+  git checkout -q d8722636c2e219cd17ff9e9bfa20fc3296241799 .
+RUN pip install -r /usr/local/app/aiohttp_boilerplate.git/requirements.txt
 
 RUN find /usr/local \
         \( -type d -a -name test -o -name tests \) \
