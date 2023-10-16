@@ -1,4 +1,4 @@
-FROM gcr.io/cloud-builders/gcloud
+FROM gcr.io/cloud-builders/gcloud@sha256:59b897e268a5be4a75fe078291bcbe790dd1f60ffa472c5be5030aefbcb9734c
 
 ADD requirements.txt requirements.txt
 
