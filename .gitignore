@@ -1,1 +1,4 @@
 ***.pyc
+# don't store we copy it from root directory
+cloud-builders/deploy-runner/requirements.txt
+cloud-builders/deploy-runner/yq_install.sh

@@ -1,13 +1,13 @@
-FROM gcr.io/cloud-builders/gcloud@sha256:59b897e268a5be4a75fe078291bcbe790dd1f60ffa472c5be5030aefbcb9734c
+FROM google/cloud-sdk:alpine@sha256:a7e555db3c3d8eee3a3a387872f75d891a72d5acd7df48962355053ae69e74e1
 
-ADD requirements.txt requirements.txt
+COPY ./requirements.txt requirements.txt
+COPY ./yq_install.sh yq_install.sh
 
-RUN apt update -y \
-    && apt install -y python3.9 python3-pip jq \
-    && curl -L https://github.com/mikefarah/yq/releases/download/v4.11.2/yq_linux_amd64 --output yq_linux_amd64 \
-    && chmod +x yq_linux_amd64 \
-    && mv yq_linux_amd64 /usr/bin/yq \
-    && pip install -r requirements.txt \
-    && pip install j2cli[yaml]
+RUN apk update
+RUN apk add --no-cache --virtual .build-deps  ca-certificates
+RUN apk add bash python3 py3-pip
+
+RUN ./yq_install.sh
+RUN pip install -r requirements.txt
 
 ENTRYPOINT [ "bash", "-c" ]

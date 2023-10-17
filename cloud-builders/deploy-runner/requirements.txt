@@ -1,5 +1,5 @@
 Jinja2==3.0.1
-j2cli==0.3.10
-jq==1.2.1
+j2cli[yaml]==0.3.10
+jq==1.6.0
 pyyaml
 bcrypt
