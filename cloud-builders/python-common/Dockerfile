@@ -1,4 +1,4 @@
-FROM python:python:3.12.0-alpine3.18@sha256:dc2e8896e2bc0a52effa1249de614eee1b770a46cb1df25a72baf60a34ce5b1a
+FROM python:3.12.0-alpine3.18@sha256:dc2e8896e2bc0a52effa1249de614eee1b770a46cb1df25a72baf60a34ce5b1a
 ENV PYTHONUNBUFFERED 1
 
 RUN apk add --no-cache --virtual .build-deps \
