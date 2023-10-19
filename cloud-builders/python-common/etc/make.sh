@@ -5,7 +5,7 @@ basename() {
     local tmp
     tmp=${1%"${1##*[!/]}"}
     tmp=${tmp##*/}
-    tmp=${tmp%"${2/"$tmp"}"}
+    tmp=${tmp%'${2/"$tmp"}'}
     printf '%s\n' "${tmp:-/}"
 }
 
@@ -25,7 +25,7 @@ self_update() {
   docker rm -f makesh;
   docker run --name=makesh cr.webdevelop.us/webdevelop-pro/python-common:latest-dev sh &&
   docker cp makesh:/app/etc/make.sh make.sh;
-  docker cp makesh:/app/etc/pylintrc .pylintrc;
+  docker cp makesh:/app/etc/ruff.toml .ruff.toml;
   docker cp makesh:/app/etc/pre-commit etc/pre-commit;
   docker stop makesh;
 }
@@ -100,7 +100,7 @@ deploy-dev)
   GIT_COMMIT=`git rev-parse --short HEAD`
   echo $BRANCH_NAME, $GIT_COMMIT
   docker build -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev --platform=linux/amd64 .
-  # snyk container test cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
+  snyk container test cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
   if [ $? -ne 0 ]; then
     echo "===================="
     echo "snyk has found a vulnerabilities, please consider choosing alternative image from snyk"
