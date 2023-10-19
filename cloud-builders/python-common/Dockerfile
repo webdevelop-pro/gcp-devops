@@ -1,4 +1,4 @@
-FROM python:3.11.5-alpine3.18@sha256:738ac14925d69ff88103c028573de949286c8d5c81afb202954512aa6207bbc2 as build
+FROM python:python:3.12.0-alpine3.18@sha256:dc2e8896e2bc0a52effa1249de614eee1b770a46cb1df25a72baf60a34ce5b1a
 ENV PYTHONUNBUFFERED 1
 
 RUN apk add --no-cache --virtual .build-deps \
@@ -12,7 +12,7 @@ RUN python -m venv /usr/local/app/venv
 ENV PATH="/usr/local/app/venv/bin:$PATH"
 RUN git clone https://github.com/webdeveloppro/aiohttp_boilerplate.git /usr/local/app/aiohttp_boilerplate.git && \
   cd /usr/local/app/aiohttp_boilerplate.git && \
-  git checkout -q d8722636c2e219cd17ff9e9bfa20fc3296241799 .
+  git checkout -q 8d340eb13196d2ea8b0efab1ef3ed830813cf2df .
 RUN pip install -r /usr/local/app/aiohttp_boilerplate.git/requirements.txt
 
 RUN find /usr/local \
