@@ -1,4 +1,4 @@
-FROM golang:1.21.1-alpine3.18@sha256:3380a7e42c62007b14a7285882f764255d92e933ca7b31ae181f4b4dcd10fc06 AS builder
+FROM golang:1.21.3-alpine3.18@sha256:27c76dcf886c5024320f4fa8ceb57d907494a3bb3d477d0aa7ac8385acd871ea
 
 ARG GIT_COMMIT=unspecified
 ARG BUILD_DATE=unspecified

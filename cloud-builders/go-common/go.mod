@@ -3,7 +3,7 @@ module github.com/webdevelop-pro/devops/cloud-builders/go-common
 go 1.20
 
 require (
-	github.com/webdevelop-pro/go-common v0.0.0-20230919152228-2d9df46ef4e9
+	github.com/webdevelop-pro/go-common v0.0.0-20231017114337-6d9fb0a98fc4
 	github.com/webdevelop-pro/go-echo-swagger v0.0.0-20230907131516-d91ac0ad0e08
 	github.com/webdevelop-pro/go-logger v0.0.0-20230917092149-7eff5f392a6e
 	go.uber.org/fx v1.20.0

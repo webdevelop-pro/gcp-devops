@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+set -e
+
 # system functions
 basename() {
     # Usage: basename "path" ["suffix"]

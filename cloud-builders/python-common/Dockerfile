@@ -28,3 +28,10 @@ RUN find /usr/local \
     )" \
     && apk add --virtual .rundeps $runDeps \
     && apk del .build-deps
+
+ADD . /app
+WORKDIR /app
+
+# RUN ./build-deploy.sh build
+COPY ./etc /app/etc
+CMD ["/bin/sh"]

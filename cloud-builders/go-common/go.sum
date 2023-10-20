@@ -196,6 +196,8 @@ github.com/valyala/fasttemplate v1.2.2 h1:lxLXG0uE3Qnshl9QyaK6XJxMXlQZELvChBOCmQ
 github.com/valyala/fasttemplate v1.2.2/go.mod h1:KHLXt3tVN2HBp8eijSv/kGJopbvo7S+qRAEEKiv+SiQ=
 github.com/webdevelop-pro/go-common v0.0.0-20230919152228-2d9df46ef4e9 h1:Dk5NBocl2E8cNjOiM/uZJ8a4Qwn9zI870F07EbtKOOY=
 github.com/webdevelop-pro/go-common v0.0.0-20230919152228-2d9df46ef4e9/go.mod h1:6BYg2qCAWxINbXLr1VohQ4Hbg0shsTy8eRtzegGXXj8=
+github.com/webdevelop-pro/go-common v0.0.0-20231017114337-6d9fb0a98fc4 h1:5U5c3LGKZyJkgxirbDUu3lXOtCYrMbtKs81XXRzlPf0=
+github.com/webdevelop-pro/go-common v0.0.0-20231017114337-6d9fb0a98fc4/go.mod h1:6BYg2qCAWxINbXLr1VohQ4Hbg0shsTy8eRtzegGXXj8=
 github.com/webdevelop-pro/go-echo-swagger v0.0.0-20230907131516-d91ac0ad0e08 h1:24HmK9bjMMeZLWB0Z3ZwfP+fBOV1NDAdLKGC3rZjBNg=
 github.com/webdevelop-pro/go-echo-swagger v0.0.0-20230907131516-d91ac0ad0e08/go.mod h1:T4WLt1GbGlLG448EG20KwruA//uOmT8CKebezXQOFg4=
 github.com/webdevelop-pro/go-logger v0.0.0-20230917092149-7eff5f392a6e h1:L+on5C/fa1t4E9AxwP74D8hS6NSt6ohrokznJqlPIHY=
