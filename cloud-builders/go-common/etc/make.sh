@@ -31,7 +31,7 @@ build() {
 }
 
 self_update() {
-  mkdir etc;
+  [ ! -d "etc/" ] && mkdir etc;
   docker pull cr.webdevelop.us/webdevelop-pro/go-common:latest-dev;
   docker rm -f makesh;
   docker run --name=makesh cr.webdevelop.us/webdevelop-pro/go-common:latest-dev sh &&
@@ -62,7 +62,7 @@ install)
   ;;
 
 lint)
-  golangci-lint -c .golangci.yml run
+  golangci-lint -c .golangci.yml run $2 $3
   ;;
 
 test)

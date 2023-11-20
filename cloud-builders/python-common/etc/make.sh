@@ -22,7 +22,7 @@ SERVICE_NAME=$(lstrip $(basename $(pwd)) "i-")
 REPOSITORY=$COMPANY_NAME/i-$SERVICE_NAME
 
 self_update() {
-  mkdir etc;
+  [ ! -d "etc/" ] && mkdir etc;
   docker pull cr.webdevelop.us/webdevelop-pro/python-common:latest-dev;
   docker rm -f makesh;
   docker run --name=makesh cr.webdevelop.us/webdevelop-pro/python-common:latest-dev sh &&
@@ -53,7 +53,7 @@ install)
   ;;
 
 lint)
-  ruff check app/ tests/
+  ruff check app/ tests/ $2 $3
   ;;
 
 test)
