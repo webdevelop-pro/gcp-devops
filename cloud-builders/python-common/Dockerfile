@@ -12,7 +12,7 @@ RUN python -m venv /usr/local/app/venv
 ENV PATH="/usr/local/app/venv/bin:$PATH"
 RUN git clone https://github.com/webdeveloppro/aiohttp_boilerplate.git /usr/local/app/aiohttp_boilerplate.git && \
   cd /usr/local/app/aiohttp_boilerplate.git && \
-  git checkout -q 0e40c20f38ee5356830a9080f32ac93f6fcf28ef .
+  git checkout -q 23263f0bb0bb89da3801562d098ef6992b5cf236 .
 RUN pip install -r /usr/local/app/aiohttp_boilerplate.git/requirements.txt
 
 RUN find /usr/local \
