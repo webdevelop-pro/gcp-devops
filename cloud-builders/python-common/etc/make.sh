@@ -47,7 +47,7 @@ install)
 
   if [ -d ".git" -a -d ".git/hooks" ]
   then
-    rm .git/hooks/pre-commit 2>/dev/null;
+    rm .git/hooks/pre-commit 2>/dev/null || echo 'ok' # ignore error to let sh continue
     ln -s ../../etc/pre-commit .git/hooks/pre-commit
   fi
   ;;
