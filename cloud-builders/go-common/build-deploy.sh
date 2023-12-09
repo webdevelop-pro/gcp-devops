@@ -1,10 +1,6 @@
 COMPANY_NAME=webdevelop-pro
 SERVICE_NAME=go-common
 
-build() {
-  go build -ldflags "-s -w -X main.repository=${REPOSITORY} -X main.revisionID=${GIT_COMMIT} -X main.version=${BUILD_DATE}:${GIT_COMMIT} -X main.service=${SERVICE_NAME}" -o ./app ./*.go && chmod +x ./app
-}
-
 case $1 in
 
 run)
@@ -18,8 +14,8 @@ audit)
   gosec ./...
   ;;
 
-build)
-  build
+download)
+  go mod download
   ;;
 
 *)
