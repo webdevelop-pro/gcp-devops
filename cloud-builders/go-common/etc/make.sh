@@ -17,7 +17,13 @@ lstrip() {
 }
 
 WORK_DIR=$(pwd)
-COMPANY_NAME=webdevelop-pro
+# if company name not set - try to get it from the path$
+if [ -z "${COMPANY_NAME}" ]; then
+  COMPANY_NAME=$(lstrip $(basename `cd ..; pwd`) "pro")
+else
+  COMPANY_NAME="${COMPANY_NAME}"
+fi
+
 SERVICE_NAME=$(lstrip $(basename $(pwd)) "i-")
 REPOSITORY=$COMPANY_NAME/i-$SERVICE_NAME
 
@@ -148,7 +154,7 @@ deploy-dev)
   fi
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev
-  kubectl -n webdevelop-dev set image deployment/$SERVICE_NAME $SERVICE_NAME=cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
+  kubectl -n $COMPANY_NAME-dev set image deployment/$SERVICE_NAME $SERVICE_NAME=cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
   ;;
 
 help)
