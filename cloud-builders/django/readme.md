@@ -1,7 +1,8 @@
-# Go lang common image
+# Django docker image
 
-Pre-build docker image for go 1.21.5
-- Improve docker build up for 10x times
+Pre-build django image with python 3.12
+
+- Speed up CI/CD build up to 10 times
 - Make sure base image is secure with snyk vulnerability scanner
 - Universal make.sh file to help have similar pipelines on different go based repos
 
@@ -15,11 +16,9 @@ Pre-build docker image for go 1.21.5
 
 ## Structure
 - build all heavy dependencies (gcc, fx.uber, modern-go/concurrent, modern-go/reflect2)
-- `etc/golangci.yml` - actuall rules for golang linter
+- `etc/ruff.toml` - actuall rules for golang linter
 - `etc/make.sh` - bash utility with usefull commands
 - `etc/pre-commit` - git pre-commit rules
-- `etc/air.toml` - autorestart service on changes
-
 
 ## Usage example
 ```Dockerfile
@@ -31,6 +30,7 @@ RUN ./make.sh build
 ```
 
 # ToDo
-- [ ] `./make.sh coverage` to generate badger for test coverage
-- [ ] `./make.sh run-debug-dev` add ability to run in debug mode
+- [ ] add ruff linter
+- [ ] add ruff linter config
+- [ ] add make.sh and installaion guides
 

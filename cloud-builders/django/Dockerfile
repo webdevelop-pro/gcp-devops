@@ -1,4 +1,4 @@
-FROM python:3.11.7-alpine3.18@sha256:5e6a1b5f58efba3b2bd4affdce2a5075832c986fa6ccfad32c3998b8c91a3ca0 as build
+FROM python:3.12.0-alpine3.18 as build
 ENV PYTHONUNBUFFERED 1
 
 RUN apk add --no-cache --virtual .build-deps \
@@ -6,17 +6,20 @@ RUN apk add --no-cache --virtual .build-deps \
   libffi-dev python3-dev openssl-dev openssh-client \
   git gcc
 
-WORKDIR /usr/local/app/
-RUN python -m venv /usr/local/app/venv
-ENV PATH="/usr/local/app/venv/bin:$PATH"
-RUN pip install https://github.com/webdeveloppro/aiohttp_boilerplate/archive/refs/tags/v0.5.0.zip
+WORKDIR /usr/local/app
+RUN ln -s /usr/local/app /app
 
-RUN find /usr/local \
+RUN python -m venv  /usr/local/app
+COPY requirements.txt /usr/local/app/requirements.txt
+ENV PATH="/usr/local/app/venv/bin:$PATH"
+RUN pip install -r /usr/local/app/requirements.txt
+
+RUN find /usr/local/app \
         \( -type d -a -name test -o -name tests \) \
         -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
         -exec rm -rf '{}' + \
     && runDeps="$( \
-        scanelf --needed --nobanner --recursive /usr/local/app/local \
+        scanelf --needed --nobanner --recursive /usr/local/app \
                 | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
                 | sort -u \
                 | xargs -r apk info --installed \
@@ -25,9 +28,5 @@ RUN find /usr/local \
     && apk add --virtual .rundeps $runDeps \
     && apk del .build-deps
 
-ADD . /app
-WORKDIR /app
-
 # RUN ./build-deploy.sh build
-COPY ./etc /app/etc
 CMD ["/bin/sh"]

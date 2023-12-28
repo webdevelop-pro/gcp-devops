@@ -14,52 +14,12 @@ skip-files:
 linters:
   enable-all: true
   disable:
-    - gochecknoinits
-    - gochecknoglobals
-    - lll
-    - typecheck
-    - tagliatelle
-    - godot
-    - gomoddirectives
+    - nlreturn
     - wrapcheck
-    - gomnd
+    - tagliatelle
     - exhaustivestruct
-    - funlen
-    - gocognit
-    - cyclop
-    - maligned
-    - revive
-    - gofumpt
-    - gci
-    - nolintlint
-    - goerr113
-    - godox
-    - varnamelen
-    - ireturn
-    - contextcheck
-    - nilnil
-    - exhaustruct
-    - testpackage
-    - exhaustive
-    - goconst
-    - forbidigo
-    - maintidx
-    - gocyclo
-    - interfacer
-    - noctx
-    - ifshort
-    - forcetypeassert
-    - scopelint
-    - gofmt
-    - goimports
-    - dupl
-    - containedctx
-    - execinquery
-    - nestif
-    - nosnakecase
-    - interfacebloat
-
-
+    - depguard
+    - godot
 
 linters-settings:
   cyclop:
@@ -70,15 +30,6 @@ linters-settings:
 
   stylecheck:
     checks: [ "all", "-ST1003" ]
-
-  gocritic:
-    disabled-checks:
-      - commentFormatting
-      - singleCaseSwitch
-  
-  golint:
-    disabled-checks:
-      - text: "context.Context should be the first parameter of a function"
 
   gosec:
     # To select a subset of rules to run.

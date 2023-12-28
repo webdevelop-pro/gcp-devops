@@ -1,4 +1,4 @@
-FROM golang:1.21.1-alpine3.18@sha256:3380a7e42c62007b14a7285882f764255d92e933ca7b31ae181f4b4dcd10fc06 AS builder
+FROM golang:1.21.5-alpine3.19@sha256:101168f254556b660b19fd7c542cde4cdc963053573e67825ed16b8fe20e1ff8
 
 ARG GIT_COMMIT=unspecified
 ARG BUILD_DATE=unspecified
@@ -20,7 +20,7 @@ ADD . /app
 
 WORKDIR /app
 
-RUN ./build-deploy.sh build
+RUN ./build-deploy.sh download
 
 COPY etc ./etc /app/etc/
 CMD ["/bin/sh"]

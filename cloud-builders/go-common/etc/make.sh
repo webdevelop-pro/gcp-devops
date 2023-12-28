@@ -1,11 +1,13 @@
 #!/usr/bin/env sh
+set -xe
+
 # system functions
 basename() {
     # Usage: basename "path" ["suffix"]
     local tmp
     tmp=${1%"${1##*[!/]}"}
     tmp=${tmp##*/}
-    tmp=${tmp%"${2/"$tmp"}"}
+    tmp=${tmp%'${2/"$tmp"}'}
     printf '%s\n' "${tmp:-/}"
 }
 
@@ -15,7 +17,13 @@ lstrip() {
 }
 
 WORK_DIR=$(pwd)
-COMPANY_NAME=webdevelop-pro
+# if company name not set - try to get it from the path$
+if [ -z "${COMPANY_NAME}" ]; then
+  COMPANY_NAME=$(lstrip $(basename `cd ..; pwd`) "pro")
+else
+  COMPANY_NAME="${COMPANY_NAME}"
+fi
+
 SERVICE_NAME=$(lstrip $(basename $(pwd)) "i-")
 REPOSITORY=$COMPANY_NAME/i-$SERVICE_NAME
 
@@ -29,7 +37,7 @@ build() {
 }
 
 self_update() {
-  mkdir etc;
+  [ ! -d "etc/" ] && mkdir etc;
   docker pull cr.webdevelop.us/webdevelop-pro/go-common:latest-dev;
   docker rm -f makesh;
   docker run --name=makesh cr.webdevelop.us/webdevelop-pro/go-common:latest-dev sh &&
@@ -54,13 +62,13 @@ install)
 
   if [ -d ".git" -a -d ".git/hooks" ]
   then
-    rm .git/hooks/pre-commit 2>/dev/null;
+    rm .git/hooks/pre-commit 2>/dev/null || echo 'ok' # ignore error to let sh continue
     ln -s ../../etc/pre-commit .git/hooks/pre-commit
   fi
   ;;
 
 lint)
-  golangci-lint -c .golangci.yml run
+  golangci-lint -c .golangci.yml run $2 $3
   ;;
 
 test)
@@ -146,7 +154,7 @@ deploy-dev)
   fi
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev
-  kubectl -n webdevelop-dev set image deployment/$SERVICE_NAME $SERVICE_NAME=cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
+  kubectl -n $COMPANY_NAME-dev set image deployment/$SERVICE_NAME $SERVICE_NAME=cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
   ;;
 
 help)
