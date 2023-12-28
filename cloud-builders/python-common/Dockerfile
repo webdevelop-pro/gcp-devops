@@ -6,13 +6,10 @@ RUN apk add --no-cache --virtual .build-deps \
   libffi-dev python3-dev openssl-dev openssh-client \
   git gcc
 
-WORKDIR /usr/local/app/aiohttp_boilerplate.git
-
+WORKDIR /usr/local/app/
 RUN python -m venv /usr/local/app/venv
 ENV PATH="/usr/local/app/venv/bin:$PATH"
-RUN git clone https://github.com/webdeveloppro/aiohttp_boilerplate.git /usr/local/app/aiohttp_boilerplate.git && \
-  cd /usr/local/app/aiohttp_boilerplate.git
-RUN pip install -r /usr/local/app/aiohttp_boilerplate.git/requirements.txt
+RUN pip install https://github.com/webdeveloppro/aiohttp_boilerplate/archive/refs/tags/v0.5.0.zip
 
 RUN find /usr/local \
         \( -type d -a -name test -o -name tests \) \

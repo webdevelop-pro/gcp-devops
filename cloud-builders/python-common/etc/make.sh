@@ -17,15 +17,22 @@ lstrip() {
 }
 
 WORK_DIR=$(pwd)
-# if company name not set - try to get it from the path$
+# if company name not set - try to get it from the path
 if [ -z "${COMPANY_NAME}" ]; then
   COMPANY_NAME=$(lstrip $(basename `cd ..; pwd`) "pro")
 else
   COMPANY_NAME="${COMPANY_NAME}"
 fi
 
-SERVICE_NAME=$(lstrip $(basename $(pwd)) "i-")
-REPOSITORY=$COMPANY_NAME/i-$SERVICE_NAME
+# if service name not set - try to get it from the path
+if [ -z "${SERVICE_NAME}" ]; then
+  SERVICE_NAME=$(lstrip $(basename $(pwd)) "i-")
+else
+  SERVICE_NAME="${SERVICE_NAME}"
+fi
+
+
+REPOSITORY=$COMPANY_NAME/$SERVICE_NAME
 
 self_update() {
   [ ! -d "etc/" ] && mkdir etc;
@@ -107,16 +114,16 @@ deploy-dev)
   BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
   GIT_COMMIT=`git rev-parse --short HEAD`
   echo $BRANCH_NAME, $GIT_COMMIT
-  docker build -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev --platform=linux/amd64 .
-  snyk container test cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
+  docker build -t cr.webdevelop.us/$REPOSITORY:$GIT_COMMIT -t cr.webdevelop.us/$REPOSITORY:latest-dev --platform=linux/amd64 .
+  snyk container test cr.webdevelop.us/$REPOSITORY:$GIT_COMMIT
   if [ $? -ne 0 ]; then
     echo "===================="
     echo "snyk has found a vulnerabilities, please consider choosing alternative image from snyk"
     echo "===================="
   fi
-  docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
-  docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev
-  kubectl -n $COMPANY_NAME-dev set image deployment/$SERVICE_NAME $SERVICE_NAME=cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
+  docker push cr.webdevelop.us/$REPOSITORY:$GIT_COMMIT
+  docker push cr.webdevelop.us/$REPOSITORY:latest-dev
+  kubectl -n $COMPANY_NAME-dev set image deployment/$SERVICE_NAME $SERVICE_NAME=cr.webdevelop.us/$REPOSITORY:$GIT_COMMIT
   ;;
 
 help)
