@@ -11,6 +11,9 @@ RUN python -m venv /usr/local/app/venv
 ENV PATH="/usr/local/app/venv/bin:$PATH"
 RUN pip install https://github.com/webdeveloppro/aiohttp_boilerplate/archive/refs/tags/v0.5.0.zip
 
+# in case if we want to install latest
+# RUN RUN pip install https://github.com/webdeveloppro/aiohttp_boilerplate/archive/refs/tags/$(curl -s https://api.github.com/repos/webdeveloppro/aiohttp_boilerplate/releases/latest | grep tag_name | grep -Eo '"([^ _]*)"' | tr -d '"').zip
+
 RUN find /usr/local \
         \( -type d -a -name test -o -name tests \) \
         -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
