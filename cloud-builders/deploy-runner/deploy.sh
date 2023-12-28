@@ -1,6 +1,9 @@
 #!/bin/sh
 set -xv
 
+cp ../../requirements.txt requirements.txt
+cp ../../yq_install.sh yq_install.sh
+
 ARCH="$(uname -p)"
 DATE_DDMMYYYY="$(date +%d%m%Y)"
 

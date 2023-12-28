@@ -1,9 +1,5 @@
 Jinja2==3.0.1
-j2cli==0.3.10
+j2cli[yaml]==0.3.10
 jq==1.6.0
 pyyaml
 bcrypt
-
-ECHO "RUN THIS FUNCKING COMMAND TO INSTALL CUSTOM YQ"
-ECHO "wget https://github.com/mikefarah/yq/releases/download/v4.35.2/yq_linux_amd64.tar.gz -O - |\
-  tar xz && mv yq_linux_amd64 ./venv/bin/yq"
