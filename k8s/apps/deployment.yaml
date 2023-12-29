@@ -174,9 +174,11 @@ spec:
           {%- endfor %}
           {%- endif %}
 
+          {%- if app.pod_update_version is defined %}
           env:
           - name: "pod_update_version"
             value: "{{ app.pod_update_version | default(0) }}"
+          {%- endif %}
           {%- for var in app.get('env', []) %}
           - name: "{{ var.name }}"
             valueFrom:
