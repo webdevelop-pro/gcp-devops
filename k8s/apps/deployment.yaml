@@ -174,8 +174,8 @@ spec:
           {%- endfor %}
           {%- endif %}
 
-          {%- if app.pod_update_version is defined %}
           env:
+          {%- if app.pod_update_version is defined %}
           - name: "pod_update_version"
             value: "{{ app.pod_update_version | default(0) }}"
           {%- endif %}
