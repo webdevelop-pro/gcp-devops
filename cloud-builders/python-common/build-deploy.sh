@@ -21,7 +21,7 @@ audit)
   BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
   GIT_COMMIT=`git rev-parse --short HEAD`
   echo $BRANCH_NAME, $GIT_COMMIT
-  docker build -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev -t webdeveloppro/$SERVICE_NAME:$GIT_COMMIT -t webdeveloppro/$SERVICE_NAME:latest-dev -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:v0.5.4 --platform=linux/amd64 .
+  docker build -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev -t webdeveloppro/$SERVICE_NAME:$GIT_COMMIT -t webdeveloppro/$SERVICE_NAME:latest-dev -t cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:v0.5.5 --platform=linux/amd64 .
   # snyk container test cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
   if [ $? -ne 0 ]; then
     echo "===================="
@@ -33,7 +33,7 @@ audit)
   docker push webdeveloppro/$SERVICE_NAME:$GIT_COMMIT
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
-  docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:v0.5.4
+  docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:v0.5.5
   ;;
 
 esac
