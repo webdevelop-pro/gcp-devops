@@ -29,14 +29,32 @@ function _render_template()
 {
     SERVICE_NAME=$1
     TEMPLATE_FILE=$2
+    OUTPUT_FILE=${RENDERED_TEMPLATES_DIR}/${SERVICE_NAME}/$(basename ${TEMPLATE_FILE})
 
     echo "Render $(basename $TEMPLATE_FILE) for $SERVICE_NAME"
 
-    j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -e os "${TEMPLATE_FILE}" ${DEPLOY_CONFIG} | sed '/^[[:blank:]]*$/ d' > ${RENDERED_TEMPLATES_DIR}/${SERVICE_NAME}/$(basename ${TEMPLATE_FILE})
+    j2 --filters ${BASE_PATH}/etc/jinja_custom_filters.py -e os "${TEMPLATE_FILE}" ${DEPLOY_CONFIG} | sed '/^[[:blank:]]*$/ d' > $OUTPUT_FILE
 
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
         echo "!!!!!!!!!! Failed while render $(basename $TEMPLATE_FILE) template for service ${SERVICE_NAME}"
         exit 1
+    fi
+
+    if [ "$(basename ${TEMPLATE_FILE})" = "deployment.yaml" ]; then
+        CURRENT_IMAGE=$(
+            kubectl get \
+            --ignore-not-found \
+            -f $OUTPUT_FILE \
+            --template '{{ range .spec.template.spec.containers }} {{ if eq .name $.spec.template.metadata.labels.app }} {{ .image }} {{ end }} {{ end }}'
+        )
+
+        if [ -n "$CURRENT_IMAGE"  ]; then
+            echo "Image replaced to current version $(echo $CURRENT_IMAGE)"
+
+            BASE_IMAGE=$(echo $CURRENT_IMAGE | grep -Eo '.*:')
+
+            sed -i "s@\"$BASE_IMAGE.*\"@\"$(echo $CURRENT_IMAGE)\"@g" $OUTPUT_FILE
+        fi
     fi
 }
 
