@@ -151,7 +151,7 @@ spec:
           {%- if app.get('imagePullPolicy', '') != '' %}
           imagePullPolicy: "{{ app.imagePullPolicy }}"
           {%- else %}
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           {%- endif %}
           {%- if app.command is defined %}
           command: {{ app.command }}
