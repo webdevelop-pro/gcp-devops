@@ -20,6 +20,9 @@ linters:
     - exhaustivestruct
     - depguard
     - godot
+    - exhaustruct
+    - wsl
+    - tagalign
 
 linters-settings:
   cyclop:

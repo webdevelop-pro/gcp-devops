@@ -33,7 +33,12 @@ init() {
 }
 
 build() {
-  go build -ldflags "-s -w -X main.repository=${REPOSITORY} -X main.revisionID=${GIT_COMMIT} -X main.version=${BUILD_DATE}:${GIT_COMMIT} -X main.service=${SERVICE_NAME}" -o ./app ./cmd/server/*.go && chmod +x ./app
+  for file in cmd/*; do
+    if [ -d "$file" ]; then
+      name=${file##*/}
+      go build -ldflags "-s -w -X main.repository=${REPOSITORY} -X main.revisionID=${GIT_COMMIT} -X main.version=${BUILD_DATE}:${GIT_COMMIT} -X main.service=${SERVICE_NAME}" -o ./$name ./cmd/$name/*.go && chmod +x ./$name
+    fi
+  done
 }
 
 self_update() {
