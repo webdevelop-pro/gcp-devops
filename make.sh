@@ -53,7 +53,7 @@ function _render_template()
 
             BASE_IMAGE=$(echo $CURRENT_IMAGE | grep -Eo '.*:')
 
-            sed -i "s@\"$BASE_IMAGE(^doc)*\"@\"$(echo $CURRENT_IMAGE)\"@g" $OUTPUT_FILE
+            sed -i "s@\"$BASE_IMAGE.*\"@\"$(echo $CURRENT_IMAGE)\"@g" $OUTPUT_FILE
         fi
     fi
 }
