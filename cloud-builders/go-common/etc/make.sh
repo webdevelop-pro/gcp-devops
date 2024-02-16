@@ -85,11 +85,11 @@ test)
 
   integration)
     init
-    go test -run=Integration -count=1 ${PKG_LIST} $3
+    go test -run=Integration -count=1 -p 1 ${PKG_LIST} $3
     ;;
   *)
       init
-      go test -count=1 ${PKG_LIST} $2 $3
+      go test -count=1 -p 1 ${PKG_LIST} $2 $3
     ;;
 
     esac
