@@ -80,12 +80,12 @@ test)
   case $2 in
   unit)
     init
-    go test -run=Unit -count=1 ${PKG_LIST} $2 $3
+    go test -run=Unit -count=1 ${PKG_LIST} $3
     ;;
 
   integration)
     init
-    go test -run=Integration -count=1 ${PKG_LIST} $2 $3
+    go test -run=Integration -count=1 ${PKG_LIST} $3
     ;;
   *)
       init
