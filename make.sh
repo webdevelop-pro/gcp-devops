@@ -230,10 +230,15 @@ function apply()
     fi
 }
 
+function wait {
+    kubectl -n ${env_k8s_apps_namespace} wait pod --all --timeout=3m --for=condition=Ready    
+}
+
 function deploy()
 {
-    render_templates $1 $2
-    apply $1 $2
+    # render_templates $1 $2
+    # apply $1 $2
+    wait
 }
 
 function help()
