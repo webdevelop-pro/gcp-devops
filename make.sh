@@ -236,8 +236,8 @@ function wait {
 
 function deploy()
 {
-    # render_templates $1 $2
-    # apply $1 $2
+    render_templates $1 $2
+    apply $1 $2
     wait
 }
 
