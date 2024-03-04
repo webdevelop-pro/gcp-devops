@@ -1,10 +1,12 @@
-FROM python:3.12-alpine3.19@sha256:ae1f508f01ac1806e84c68b43ee0983b586426dfa39f5d21eced0dd7f5e230f4 as build
+FROM python:3.12-alpine3.19@sha256:849ed6079c9f797ca9c1b7d6aea1c00aea3ac35110cbd0d6003f15950017ea8d as build
 ENV PYTHONUNBUFFERED 1
 
 RUN apk add --no-cache --virtual .build-deps \
   build-base ca-certificates linux-headers musl-dev \
   libffi-dev python3-dev openssl-dev openssh-client \
-  git gcc
+  git gcc curl 
+
+RUN update-ca-certificates
 
 WORKDIR /usr/local/app/
 RUN python -m venv /usr/local/app/venv
