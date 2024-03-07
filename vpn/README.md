@@ -23,7 +23,8 @@ For connect to some service, use this format for urls:
 http://<service_namme>-service.webdevelop-dev.svc.cluster.local:8085/***
 ```
 
-all service names you can find here: https://github.com/webdevelop-pro/devops/tree/master/configs/global/webdevelop
+- all service names you can find here: https://github.com/webdevelop-pro/devops/tree/master/configs/global/webdevelop
+- for pass authorization you can add `Authoriztion: <identity_id>` header
 
 ## Diagram 
 
