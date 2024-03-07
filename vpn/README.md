@@ -1,5 +1,3 @@
-![image](https://github.com/webdevelop-pro/gcp-devops/assets/10445445/5fed1ad6-0a26-4eef-99b4-df1d338b7bd8)# VPN
-
 ## Usage
 
 1) Install vireguard
