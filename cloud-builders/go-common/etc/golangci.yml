@@ -23,6 +23,7 @@ linters:
     - exhaustruct
     - wsl
     - tagalign
+    - varnamelen
 
 linters-settings:
   cyclop:
