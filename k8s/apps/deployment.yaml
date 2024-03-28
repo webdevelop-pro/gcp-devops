@@ -207,6 +207,11 @@ spec:
           {%- endfor %}
           {%- endif %}
 
+          startupProbe:
+            exec:
+              command: ["echo"]
+            initialDelaySeconds: 10
+
           {%- if app.get('helthcheck', {}).get('enable', false) %}
           readinessProbe:
             failureThreshold: 3
