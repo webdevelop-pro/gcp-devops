@@ -129,7 +129,14 @@ coverage)
 run)
   GIT_COMMIT=$(git rev-parse --short HEAD)
   BUILD_DATE=$(date "+%Y%m%d")
-  build && ./http
+
+  if [ -z "$2" ]
+  then
+    build && ./http
+  else
+    build && ./$2
+  fi
+
   ;;
 
 audit)
