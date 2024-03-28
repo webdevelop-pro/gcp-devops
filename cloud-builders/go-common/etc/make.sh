@@ -33,6 +33,9 @@ init() {
 }
 
 build() {
+  GIT_COMMIT=$(git rev-parse --short HEAD)
+  BUILD_DATE=$(date "+%Y%m%d")
+
   for file in cmd/*; do
     if [ -d "$file" ]; then
       name=${file##*/}
@@ -127,14 +130,11 @@ coverage)
   ;;
 
 run)
-  GIT_COMMIT=$(git rev-parse --short HEAD)
-  BUILD_DATE=$(date "+%Y%m%d")
-
   if [ -z "$2" ]
   then
-    build && ./http
+    (build || echo Failed build http) && $(dirname $0)/http
   else
-    build && ./$2
+    (build || echo Failed build $2) && $(dirname $0)/$2
   fi
 
   ;;
