@@ -26,7 +26,6 @@ linters:
     - varnamelen
     - godox
     - funlen
-    - gci
     - gocognit
     - interfacebloat
     - cyclop
