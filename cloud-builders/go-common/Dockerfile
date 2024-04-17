@@ -1,4 +1,4 @@
-FROM golang:1.21.5-alpine3.19@sha256:101168f254556b660b19fd7c542cde4cdc963053573e67825ed16b8fe20e1ff8
+FROM golang:1.22.2-alpine3.19@sha256:cdc86d9f363e8786845bea2040312b4efa321b828acdeb26f393faa864d887b0
 
 ARG GIT_COMMIT=unspecified
 ARG BUILD_DATE=unspecified
@@ -20,6 +20,8 @@ ADD . /app
 
 WORKDIR /app
 
+# Install swagger library
+RUN go install github.com/go-swagger/go-swagger/cmd/swagger@latest
 RUN ./build-deploy.sh download
 
 COPY etc ./etc /app/etc/
