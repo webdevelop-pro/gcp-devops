@@ -33,7 +33,7 @@ audit)
   docker push webdeveloppro/$SERVICE_NAME:$GIT_COMMIT
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:latest-dev
   docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:$GIT_COMMIT
-  docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:v0.5.7
+  docker push cr.webdevelop.us/$COMPANY_NAME/$SERVICE_NAME:v0.6.0
   ;;
 
 esac
