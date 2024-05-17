@@ -64,6 +64,7 @@ install)
   go install github.com/go-swagger/go-swagger/cmd/swagger@latest
   go install github.com/securego/gosec/v2/cmd/gosec@latest
   go install github.com/cosmtrek/air@latest
+  go install github.com/daixiang0/gci@latest
 
   echo "set up pre-commit hook and make.sh file"
   self_update;
