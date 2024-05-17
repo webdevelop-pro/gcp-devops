@@ -28,9 +28,9 @@ data:
   PGID: "1000"
   TZ: "America/Mexico_City"
   SERVERPORT: "31820"
-  PEERS: "5"
+  PEERS: "6"
   PEERDNS: "10.43.0.10"
-  ALLOWEDIPS: "0.0.0.0/0, ::/0"
+  ALLOWEDIPS: "10.43.0.0/16"
   INTERNAL_SUBNET: "10.13.13.0"
 ---
 apiVersion: apps/v1
