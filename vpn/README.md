@@ -5,12 +5,16 @@
 ```
 sudo cp dev-vpn.conf /etc/wireguard/dev-vpn.conf
 ```
-3) For connect to vpn use
+3) Add hosts from hosts file to your /etc/hosts
+```
+sudo sh -c 'cat hosts >> /etc/hosts'
+```
+4) For connect to vpn use
 ```
 sudo wg-quick up dev-vpn
 ```
-4) Check http://admin-web-service.webdevelop-dev.svc.cluster.local:8085/admin
-5) For disconnect vpn use
+5) Check http://admin-web-service.webdevelop-dev.svc.cluster.local:8085/admin
+6) For disconnect vpn use
 ```
 sudo wg-quick down dev-vpn
 ```

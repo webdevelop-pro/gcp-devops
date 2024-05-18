@@ -18,6 +18,10 @@ metadata:
   labels:
     app: "{{ service_name }}"
 spec:
+  {%- if 'clusterIP' in app %}
+  clusterIP: {{ app.get('clusterIP') }}
+  {%- endif %}
+
   ports:
   {%- for name, port in app.get('ports', {}).items() %}
     - port: {{ port }}

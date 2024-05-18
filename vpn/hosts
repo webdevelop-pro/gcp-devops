@@ -1,0 +1,17 @@
+10.43.192.170 mailslurper-service.webdevelop-dev.svc.cluster.local
+10.43.240.47 docs-service.webdevelop-dev.svc.cluster.local
+10.43.1.101 admin-web-service.webdevelop-dev.svc.cluster.local
+10.43.1.102 chatbot-api-service.webdevelop-dev.svc.cluster.local
+10.43.1.103 creed-service.webdevelop-dev.svc.cluster.local
+10.43.1.104 email-worker-service.webdevelop-dev.svc.cluster.local
+10.43.1.105 escrow-api-service.webdevelop-dev.svc.cluster.local
+10.43.1.106 esign-api-service.webdevelop-dev.svc.cluster.local
+10.43.1.108 investment-api-service.webdevelop-dev.svc.cluster.local
+10.43.1.109 kyc-api-service.webdevelop-dev.svc.cluster.local
+10.43.1.110 notification-worker-service.webdevelop-dev.svc.cluster.local
+10.43.1.111 offer-api-service.webdevelop-dev.svc.cluster.local
+10.43.1.112 ory-kratos-service.webdevelop-dev.svc.cluster.local
+10.43.1.113 ory-oathkeeper-service.webdevelop-dev.svc.cluster.local
+10.43.1.114 payment-api-service.webdevelop-dev.svc.cluster.local
+10.43.1.115 user-api-service.webdevelop-dev.svc.cluster.local
+10.43.1.116 wallet-api-service.webdevelop-dev.svc.cluster.local
