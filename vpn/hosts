@@ -6,6 +6,7 @@
 10.43.1.104 email-worker-service.webdevelop-dev.svc.cluster.local
 10.43.1.105 escrow-api-service.webdevelop-dev.svc.cluster.local
 10.43.1.106 esign-api-service.webdevelop-dev.svc.cluster.local
+10.43.1.107 filer-api-service.webdevelop-dev.svc.cluster.local
 10.43.1.108 investment-api-service.webdevelop-dev.svc.cluster.local
 10.43.1.109 kyc-api-service.webdevelop-dev.svc.cluster.local
 10.43.1.110 notification-worker-service.webdevelop-dev.svc.cluster.local
