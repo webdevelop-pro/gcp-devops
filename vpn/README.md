@@ -46,6 +46,12 @@ P.S. If your need peers > 6 you can increase PEERS var in  https://github.com/we
 kubectl apply -f wireguard-k8s.yaml 
 ```
 
+## Get current services internal ips
+
+```
+kubectl -n webdevelop-dev get svc
+```
+
 ## Diagram 
 
 ![image](https://github.com/webdevelop-pro/gcp-devops/assets/10445445/0b2397b1-f387-4bd1-b769-8dc03b93b09d)
