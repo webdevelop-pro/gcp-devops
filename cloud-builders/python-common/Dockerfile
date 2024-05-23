@@ -11,7 +11,7 @@ RUN update-ca-certificates
 WORKDIR /usr/local/app/
 RUN python -m venv /usr/local/app/venv
 ENV PATH="/usr/local/app/venv/bin:$PATH"
-RUN pip install https://github.com/webdeveloppro/aiohttp_boilerplate/archive/refs/tags/v0.6.2.zip
+RUN pip install https://github.com/webdeveloppro/aiohttp_boilerplate/archive/refs/tags/v0.6.5.zip
 RUN pip install google-cloud-pubsub
 
 # in case if we want to install latest
