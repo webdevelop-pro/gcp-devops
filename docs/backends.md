@@ -90,7 +90,7 @@ settings:
   helthcheck:
     enable: true
     path: /healthcheck
-    host: "{{ env.dns.domains.farm }}"
+    host: "{{ env.common.farm }}"
 
   configmap: # TODO: Set values
     PORT: 8085

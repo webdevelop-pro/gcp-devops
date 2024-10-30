@@ -214,7 +214,7 @@ spec:
 
           {%- if app.get('helthcheck', {}).get('enable', false) %}
           readinessProbe:
-            failureThreshold: 3
+            failureThreshold: 5
             httpGet:
               httpHeaders:
               - name: Host
@@ -223,9 +223,9 @@ spec:
               port: {{ app.helthcheck.port | default(8085) }}
               scheme: HTTP
           livenessProbe:
-            failureThreshold: 3
+            failureThreshold: 5
             initialDelaySeconds: {{ app.helthcheck.initialDelaySeconds | default(240) }}
-            periodSeconds: 3
+            periodSeconds: 5
             httpGet:
               httpHeaders:
               - name: Host
